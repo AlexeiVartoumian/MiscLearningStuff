@@ -1,0 +1,4 @@
+
+
+did some basic lammbda stuff with puthon such as creating a basic function testing it. then doing the same thing but from remote ide using a zip file.saw the same thing but the lmabda is with a s3 bucket.
+then going into the configuration tab and assigning a function url meaning the function is now reachable via an endppint. then adding an IAM ROLE so that credentials are required to access the lambda. Used Postman to test the url which showed forbidden until the aws access and secret key weere passed in Postman authorisation tab. then created an environemnt variable and assigned it to the lamdba i.e same code for test database and same code for  prod database.

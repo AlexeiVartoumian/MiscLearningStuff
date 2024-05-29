@@ -1,0 +1,26 @@
+[Unit]
+Description=Your Server Startup Script
+
+[Service]
+Type=oneshot
+User=ec2-user 
+ExecStart=/home/ec2-user/ec2-java-Server-Reboot.sh  # Replace with the actual script path
+RemainAfterExit=true
+StandardOutput=/home/ec2-user/output.log
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+[Unit]
+Description=Your Server Startup Script
+
+[Service]
+Type=simple
+User=ec2-user 
+ExecStart=/home/ec2-user/ec2-java-Server-Reboot.sh  # Replace with the actual script path
+
+[Install]
+WantedBy=multi-user.target
