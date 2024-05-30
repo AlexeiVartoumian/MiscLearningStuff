@@ -1,0 +1,14 @@
+git rm --cached -r . -> remove unstaged files in git 
+git log --graph : all the commits done on the repo HEAD means what branch your on
+git ls-remote --heads origin : shows all the branches a repo has online
+git checkout -b "your branch" : how to locally create a branch
+git push -u origin "your branch" : hot to push a branch to remote repo
+git checkout "yourbranch" : switch to working in this branch 
+git merge "your branch" -m"some messge" : whatever Head is pointing to will be where the results of the merge be applied
+if conflict then either choose one or the other branch by amending the produced files by git or rewrite entirely. then add/commit normally.
+How to get copy of branch from online repo to local repo
+Step 1
+git fetch origin : this will retrieve new branches or changes from remote repo
+step2:
+git checkout -b "NameofBranch" origin/NameofBranch : creates a new brnach on your machine and switches to that branch
+i.e git checkout -b "Escape" origin/Escape 

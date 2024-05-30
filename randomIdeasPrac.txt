@@ -1,0 +1,2 @@
+
+1. mess around with aws control towers and lambda+ python to set up multiple accounts with pre-configured IAM Roles -> NOT DONE

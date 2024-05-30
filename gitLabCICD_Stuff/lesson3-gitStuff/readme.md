@@ -1,0 +1,2 @@
+
+here saw git and the workflow in gitlab . i.e use branches when working with new code ,changing the setting on gitlab to protect the main brnach so no one can push to it . when adding a linter to the yml file had to create a new branch and then merge the request.
