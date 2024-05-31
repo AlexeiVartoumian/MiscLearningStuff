@@ -1,0 +1,76 @@
+stages:
+  - build
+  - test
+  - deploy staging
+  - test staging
+  - deploy produciton
+  - test production
+
+#add postdeploy
+variables:
+    APP_BASE_URL: http://some-s3-bucket.bla.bla.lba
+    APP_BASE_URL_STAGING: http://some-s3-bucket-staging.bla.bla.lba
+build website:
+    image: node:20-alpine
+    stage: build
+    script:
+        - yarn install
+        - yarn lint
+        - yarn test
+        - yarn build
+    artifacts:
+        paths:
+          - build
+
+
+test website:
+    image: node:20-alpine
+    stage: test
+    script:
+        - yarn global add serve
+        - apk add curl
+        - serve -s build &
+        - sleep 10
+        - curl http://localhost:3000 | grep "React App"
+        #- test -f build/index.html
+
+
+deploy to staging:
+    stage: deploy staging
+    image: 
+        name: amazon/aws-cli:2.15.62
+        entrypoint: [""]
+    rules:
+        - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    script:
+        - aws --version
+        - aws s3 sync build s3://$AWS_S3_BUCKET_STAGING --delete
+        
+
+staging tests:
+    stage: test staging
+    image: curlimages/curl
+    rules:
+        - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    script:
+        - curl $APP_BASE_URL_STAGING | grep "React App"
+
+deploy to production:
+    stage: deploy production
+    image: 
+        name: amazon/aws-cli:2.15.62
+        entrypoint: [""]
+    rules:
+        - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    script:
+        - aws --version
+        - aws s3 sync build s3://$AWS_S3_BUCKET --delete
+        
+
+production tests:
+    stage: test production
+    image: curlimages/curl
+    rules:
+        - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    script:
+        - curl $APP_BASE_URL | grep "React App"
