@@ -216,9 +216,11 @@ sudo systemctl enable docker
 
 port over the app and the Dockerfile
 
-sudo docker build -t my-demo-server .  -> REMEMBER THE DOT AT THE END
+sudo docker build -t name-of-image .  -> REMEMBER THE DOT AT THE END
 
 sudo docker run -p 8081:8081 my-demo-server -> mapping the port to the container port
+
+sudo docker image ls -> see list of built images
 
 sudo docker run -d -p 8081:8081 my-demo-server -> run the dockerfile as a background process  NOte -d stands for detached mode 
 and -p stands for publish mode
