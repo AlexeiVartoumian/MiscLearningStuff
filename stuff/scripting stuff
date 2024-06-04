@@ -254,3 +254,7 @@ sudo docker network inspect name-of-network -> see additional information such a
 -----------------------------------------------------
 
 sudo chown ec2-user:ec2-user /path/to/some-resource.sh -> CHANGE OWNERSHIP OF RESOURCE/FILE. lefthand side of colon is the new owner right handside the new group
+
+---------------------------------------------------------------------------------------
+
+aws s3 cp .\bobs_file.txt s3://mygitlabbucket2024/bobs_file -> aws command to copyu into s3 bucket
