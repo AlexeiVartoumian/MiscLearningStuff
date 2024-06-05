@@ -6,7 +6,8 @@ import boto3.session
 import logger
 import re
 import subprocess
-from dotenv import load_dotenv
+import time
+from dotenv import load_dotenv,set_key, find_dotenv
 from botocore.exceptions import ClientError
 
 load_dotenv()
@@ -15,12 +16,19 @@ secret = os.environ.get("SECRET_KEY")
 region = os.environ.get("REGION")
 
 
-#s3 = boto3.resource("s3")
+def write_to_env(key,value):
+    dotenv_path = find_dotenv() or ".env"
 
+    set_key(dotenv_path,key,value)
 
-# for buckets in s3.buckets.all():
-#     print(buckets)
+def read_from_env(key):
+    load_dotenv()
+    secret_Iam_access_key = os.getenv(key)
+    if not  secret_Iam_access_key:
+        raise ValueError("AWS credentials are not set in the .env file.")
 
+    return secret_Iam_access_key
+    
 iam_users = boto3.client("iam")
 policy_arn = "arn:aws:iam::390746273208:policy/random_policy"
               
@@ -72,16 +80,17 @@ for items in iam_users.list_users()['Users']:
 
 
 
-def configure_aws_cli(access_key, secret_key, region='eu-west-2', output_format='json', profile='default'):
+def configure_aws_cli(access_key, secret_key,profile, region='eu-west-2', output_format='json', ):
     subprocess.run(f'aws configure set aws_access_key_id {access_key} --profile {profile}', shell=True)
     subprocess.run(f'aws configure set aws_secret_access_key {secret_key} --profile {profile}', shell=True)
     subprocess.run(f'aws configure set region {region} --profile {profile}', shell=True)
     subprocess.run(f'aws configure set output {output_format} --profile {profile}', shell=True)
 
-def delete_aws_cli_access_key(profile='default'):
+def delete_aws_cli_access_key(profile):
     subprocess.run(f'aws configure set aws_access_key_id "" --profile {profile}', shell=True)
     subprocess.run(f'aws configure set aws_secret_access_key "" --profile {profile}', shell=True)
     print(f"Deleted AWS CLI access keys for profile {profile}")
+
 
 if not found:
     print("init bob!")
@@ -92,8 +101,9 @@ if not found:
     #print(await_access_key)
     access_key_id = await_access_key['AccessKey']['AccessKeyId']
     secret_access_key = await_access_key['AccessKey']['SecretAccessKey']
-
+    
     configure_aws_cli(access_key_id, secret_access_key, "bob")
+    time.sleep(6)
     busy_bob = boto3.session.Session(
         aws_access_key_id = access_key_id,
         aws_secret_access_key = secret_access_key
@@ -103,35 +113,47 @@ if not found:
     print("Secret Access Key:", credentials.secret_key)
     
    
-    # s3Bucket = busy_bob.resource("s3")
-    # print(find_resource_arn_from_policy(iam_users , policy_arn))
-    # s3Bucket = busy_bob.resource("s3")
+    s3Bucket = busy_bob.resource("s3")
+    print(find_resource_arn_from_policy(iam_users , policy_arn))
+    s3Bucket = busy_bob.resource("s3")
     
-    # bucketname = find_resource_arn_from_policy(iam_users , policy_arn)
-    # bucketname = re.search(r'arn:aws:s3:::([^/]+)', bucketname).group(1)
-    # print("bucket name" , bucketname)
-    # file_to_upload = r"C:\Users\alexv\OneDrive\Documents\MiscLearningStuff\pythonstuff\bobs_file.txt"
-    # s3_key = "Bobs_file_Top_secret"
-    # # print(access_key_id)
-    # # print(secret_access_key)
-    # bucket = s3Bucket.Bucket(bucketname)
-    # bucket.upload_file(file_to_upload, s3_key)
+    bucketname = find_resource_arn_from_policy(iam_users , policy_arn)
+    bucketname = re.search(r'arn:aws:s3:::([^/]+)', bucketname).group(1)
+    print("bucket name" , bucketname)
+    file_to_upload = r"C:\Users\alexv\OneDrive\Documents\MiscLearningStuff\pythonstuff\bobs_file_Top_secret.txt"
+    s3_key = "Bobs_file_Top_secret"
+    # print(access_key_id)
+    # print(secret_access_key)
+    bucket = s3Bucket.Bucket(bucketname)
+    bucket.upload_file(file_to_upload, s3_key)
+    write_to_env("IAM_KEY", secret_access_key)
 
 else:
     access_key_id_metadata= iam_users.list_access_keys(UserName = "bob")['AccessKeyMetadata']
     access_key_id = access_key_id_metadata[0]['AccessKeyId']  
-    # secret_access_key = access_key_id_metadata[0]['SecretKey']
-    # busy_bob = boto3.Session(
-    #     aws_access_key_id=access_key_id,
-    #     aws_secret_access_key= secret_access_key 
-    # )
-    # s3 = busy_bob.resource('s3')
-    # bucketname = find_resource_arn_from_policy(iam_users , policy_arn)
-    # bucket = s3.Bucket(bucketname)
+    #secret_access_key = access_key_id_metadata[0]['SecretKey']
+    thing = read_from_env("IAM_KEY")
+    busy_bob = boto3.Session(
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key= read_from_env("IAM_KEY")
+
+    )
+    print(access_key_id)
+    print(thing + " " + "haha")
+    s3 = busy_bob.resource('s3')
+    bucketname = find_resource_arn_from_policy(iam_users , policy_arn)
+    bucketname = re.search(r'arn:aws:s3:::([^/]+)', bucketname).group(1)
+   
+    bucket = s3.Bucket(bucketname)
+
+    bucket.delete_objects(Bucket = bucketname,Delete = {"Objects" :[{"Key":"Bobs_file_Top_secret"}]} )
+    #delete_obj = s3.Object("mygitlabbucket2024","Bobs_file_Top_secret")
     
-    # delete_obj = s3.Object(bucket,"Bobs_file_Top_secret")
+   
     # delete_obj.delete()
-    
+   
+    #delete_aws_cli_access_key("bob")
+    print("bob no longer has aws cli access!")
     response = iam_users.list_attached_user_policies(UserName="bob")
     print(response)
     print("bobs creds taken away!")

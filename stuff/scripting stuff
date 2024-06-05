@@ -257,4 +257,18 @@ sudo chown ec2-user:ec2-user /path/to/some-resource.sh -> CHANGE OWNERSHIP OF RE
 
 ---------------------------------------------------------------------------------------
 
-aws s3 cp .\bobs_file.txt s3://mygitlabbucket2024/bobs_file -> aws command to copyu into s3 bucket
+
+aws s3 cp .\bobs_file.txt s3://mygitlabbucket2024/bobs_file -> aws command to copy into s3 bucket
+
+#how to manually add additiaonl user on  aws cli
+aws configure list-profiles -> list profiles tied to aws cli
+
+aws configure --profile "some user" -> sets an additional user tied to the aws cli , need access key and secret key region and output format
+
+
+# how to manually deelte a user on aws cli on windows machines
+# cd into .aws folder
+notepad credentials -> delete content and save file 
+notepad config -> delete content and save file
+
+
