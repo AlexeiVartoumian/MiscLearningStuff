@@ -120,7 +120,7 @@ if not found:
     bucketname = find_resource_arn_from_policy(iam_users , policy_arn)
     bucketname = re.search(r'arn:aws:s3:::([^/]+)', bucketname).group(1)
     print("bucket name" , bucketname)
-    file_to_upload = r"C:\Users\alexv\OneDrive\Documents\MiscLearningStuff\pythonstuff\bobs_file_Top_secret.txt"
+    file_to_upload = r"C:\Users\alexv\OneDrive\Documents\MiscLearningStuff\pythonstuff\create_user\bobs_file_Top_secret.txt"
     s3_key = "Bobs_file_Top_secret"
     # print(access_key_id)
     # print(secret_access_key)
