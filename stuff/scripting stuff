@@ -271,4 +271,17 @@ aws configure --profile "some user" -> sets an additional user tied to the aws c
 notepad credentials -> delete content and save file 
 notepad config -> delete content and save file
 
+-------------------------------------------------------------------------------------------
+
+##creating a vitual python environement for windows machines
+
+py -m venv .venv
+
+## then the directory should now have a virtual env folder. type in the path where the Scripts bat file lives
+i.each
+py .\.venv\Scripts\activate
+python -m pip install -r requirements.txt  -> once env setup install dependencies inside of venv to avoid global package conflicts
+
+
+
 
