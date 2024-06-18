@@ -1,6 +1,6 @@
 import boto3
 import json
-
+import time
 sqs = boto3.resource("sqs")
 
 queue = sqs.create_queue(QueueName = "test", Attributes = {"DelaySeconds": '5'})
@@ -36,10 +36,11 @@ demo = queue.send_messages(Entries=[
       }
      }
 ])
+time.sleep(5)
 queue.send_message(MessageBody = FixMessage)
 #print(somestring)
 #if author exists
-for message in insert.receive_messages(MessageAttributeNames =['Author']):
+for message in insert.receive_messages(MessageAttributeNames =['Author'], MaxNumberOfMessages =10 ):
     authortext = ""
     if message.message_attributes is not None:
         author_name = message.message_attributes.get("Author").get("StringValue")
