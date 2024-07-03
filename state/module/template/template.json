@@ -1,0 +1,1 @@
+{"Parameters":{"VPCCidr":{"Default":"10.0.0.0/16","Description":"Enter CIDR block","Type":"String"}},"Resources":{"myVpc":{"Properties":{"CidrBlock":{"Ref":"VPCCidr"},"Tags":[{"Key":"Name","Value":"Primate_CF_VPC"}]},"Type":"AWS::EC2::VPC"}}}
