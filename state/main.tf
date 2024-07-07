@@ -67,6 +67,7 @@ resource "aws_servicecatalog_product" "example" {
     ]
 }
 
+
 resource "aws_servicecatalog_product_portfolio_association" "example" {
     portfolio_id = aws_servicecatalog_portfolio.portfolio.id
     product_id = aws_servicecatalog_product.example.id

@@ -273,6 +273,7 @@ notepad config -> delete content and save file
 
 -------------------------------------------------------------------------------------------
 
+---------------------------------------------lambda stuff-----------------------------------
 ##creating a vitual python environement for windows machines
 
 py -m venv .venv
@@ -281,6 +282,13 @@ py -m venv .venv
 i.each
 py .\.venv\Scripts\activate
 python -m pip install -r requirements.txt  -> once env setup install dependencies inside of venv to avoid global package conflicts
+
+pip install requests -t ./package  -> for lambda put all imports that lambda cannot read natively into packages folder mkdir package beforehand
+
+
+#compressing zip folders for lambda on windows
+Compress-Archive -Path lambda_function.py -DestinationPath lambda_function.zip -Force
+Compress-Archive -Path package/* -Update -DestinationPath lambda_function.zip
 
 
 

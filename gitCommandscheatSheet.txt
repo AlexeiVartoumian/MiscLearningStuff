@@ -6,6 +6,10 @@ git push -u origin "your branch" : hot to push a branch to remote repo
 git checkout "yourbranch" : switch to working in this branch 
 git merge "your branch" -m"some messge" : whatever Head is pointing to will be where the results of the merge be applied
 if conflict then either choose one or the other branch by amending the produced files by git or rewrite entirely. then add/commit normally.
+
+git reset --soft HEAD~3 : you are ahead of master by an arbitrary number of commits. in this case 3. this will reset the commits to zero
+whilst keeping any changes on local
+
 How to get copy of branch from online repo to local repo
 Step 1
 git fetch origin : this will retrieve new branches or changes from remote repo
