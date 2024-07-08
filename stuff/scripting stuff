@@ -290,6 +290,25 @@ pip install requests -t ./package  -> for lambda put all imports that lambda can
 Compress-Archive -Path lambda_function.py -DestinationPath lambda_function.zip -Force
 Compress-Archive -Path package/* -Update -DestinationPath lambda_function.zip
 
+----------------------------------------- db with postgres on ec2 instance-------
+
+follow this guide https://www.linkedin.com/pulse/how-install-postgresql-amazon-linux-trong-luong-van-bfsqc/
+
+however at step 6  Configure PostgreSQL dothe below to set password for postgres user 
+
+sudo passwd postgres -> type in password twice
+su - postgres -> logging in as postgres thereafter. ec2-user changes to postgre
+
+when editing files makes sure they are uncommented!
+download pg4 and input the user that was created plus the password during setup in the link.
+
+venv then
+pip install fastapi uvicorn sqlalchemy psycopg2-binary
+uvicorn app.main:app --reload --> starts localserver
+
+curl -X POST "http://localhost:8000/books/" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"title\": \"To Kill a Mockingbird\", \"author\": \"Harper Lee\", \"description\": \"A classic of modern American literature\"}"
+
+curl -X GET "http://localhost:8000/books/" -H "accept: application/json"
 
 
 
