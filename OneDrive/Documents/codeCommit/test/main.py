@@ -6,14 +6,16 @@ from database import engine,get_db
 import models
 import schemas
 import uuid
-# Import your database models
+
 from models import Conversation, MessagePair
 
-# Import your Pydantic schemas
+
 from schemas import ConversationSchema, MessagePairSchema
 
-# Import your database session
+
 from database import SessionLocal, engine
+
+
 models.Base.metadata.create_all(bind = engine)
 app = FastAPI()
 
@@ -51,7 +53,9 @@ def add_message_pair(conversation_id: str, human_message: str, ai_message: str, 
 
 
 
-
+#alex creds for git 
+# vartouma-at-992382660679
+# Cja6UZx2FkjqUSm4F8aoK7QON5sewNQ9UQyb/Jpf7GAOD6xFsFyOoHsklEo=
 
 
 
