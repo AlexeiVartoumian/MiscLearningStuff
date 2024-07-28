@@ -32,3 +32,4 @@ git rebase -i HEAD~"number of commit" -> will pusll an interactive comit screen 
 
 git push --force origin HEAD:master -> force push the changes to master
 git rebase --continue -> tells git the rebase is complete
+
