@@ -57,4 +57,3 @@ the state will pass to the function arn Process refund.
   }
 }
 
-#https://sqs.eu-west-2.amazonaws.com/390746273208/SQSStepFunction
