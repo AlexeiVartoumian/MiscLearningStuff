@@ -1,0 +1,37 @@
+{
+    "Comment": "Transaction Process State Machine",
+    "StartAt": "ProcessTransaction",
+    "States": {
+      "ProcessTransaction": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.TransactionType",
+            "StringEquals": "PURCHASE",
+            "Next": "ProcessPurchase"
+          },
+          {
+            "Variable": "$.TransactionType",
+            "StringEquals": "REFUND",
+            "Next": "ProcessRefund"
+          }
+        ],
+        "Default": "HandleUnknownTransaction"
+      },
+      "ProcessRefund": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:eu-west-2:390746273208:function:ProcessRefund",
+        "End": true
+      },
+      "ProcessPurchase": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:eu-west-2:390746273208:function:ProcessPurchase",
+        "End": true
+      },
+      "HandleUnknownTransaction": {
+        "Type": "Fail",
+        "Cause": "Unknown transaction type",
+        "Error": "UnknownTransactionTypeError"
+      }
+    }
+  }
