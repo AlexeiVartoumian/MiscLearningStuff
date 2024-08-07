@@ -1,0 +1,54 @@
+{
+    "Comment": "Transaction Processing State Machine with Callback",
+    "StartAt": "ProcessTransaction",
+    "States": {
+      "ProcessTransaction": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.type",
+            "StringEquals": "PURCHASE",
+            "Next": "InitiatePurchase"
+          },
+          {
+            "Variable": "$.type",
+            "StringEquals": "REFUND",
+            "Next": "InitiateRefund"
+          }
+        ],
+        "Default": "HandleUnknownTransaction"
+      },
+      "InitiatePurchase": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:eu-west-2:390746273208:function:InitiatePurchase",
+          "Payload": {
+            "token.$": "$$.Task.Token"
+          }
+        },
+        "Next": "HandleResult"
+      },
+      "InitiateRefund": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:eu-west-2:390746273208:function:InitiateRefund",
+          "Payload": {
+            "token.$": "$$.Task.Token"
+          }
+        },
+        "Next": "HandleResult"
+      },
+      "HandleResult": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:eu-west-2:390746273208:function:ResultHandler",
+        "End": true
+      },
+      "HandleUnknownTransaction": {
+        "Type": "Fail",
+        "Cause": "Unknown transaction type",
+        "Error": "UnknownTransactionTypeError"
+      }
+    }
+  }
