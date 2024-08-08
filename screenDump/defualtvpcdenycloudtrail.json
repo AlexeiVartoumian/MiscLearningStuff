@@ -1,0 +1,48 @@
+{
+    "eventVersion": "1.09",
+    "userIdentity": {
+        "type": "AssumedRole",
+        "principalId": "AROAQKPILP2YHVLYDPOYH:alex.vartoumian+devRole2@gmail.com",
+        "arn": "arn:aws:sts::022498999984:assumed-role/AWSReservedSSO_AWSAdministratorAccess_ea5e9134ac6817cd/alex.vartoumian+devRole2@gmail.com",
+        "accountId": "022498999984",
+        "accessKeyId": "ASIAQKPILP2YFBJR2X4A",
+        "sessionContext": {
+            "sessionIssuer": {
+                "type": "Role",
+                "principalId": "AROAQKPILP2YHVLYDPOYH",
+                "arn": "arn:aws:iam::022498999984:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_AWSAdministratorAccess_ea5e9134ac6817cd",
+                "accountId": "022498999984",
+                "userName": "AWSReservedSSO_AWSAdministratorAccess_ea5e9134ac6817cd"
+            },
+            "attributes": {
+                "creationDate": "2024-08-08T11:43:19Z",
+                "mfaAuthenticated": "false"
+            }
+        }
+    },
+    "eventTime": "2024-08-08T11:49:02Z",
+    "eventSource": "ec2.amazonaws.com",
+    "eventName": "CreateDefaultVpc",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "82.132.222.140",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "errorCode": "Client.UnauthorizedOperation",
+    "errorMessage": "You are not authorized to perform this operation. User: arn:aws:sts::022498999984:assumed-role/AWSReservedSSO_AWSAdministratorAccess_ea5e9134ac6817cd/alex.vartoumian+devRole2@gmail.com is not authorized to perform: ec2:CreateDefaultVpc on resource: arn:aws:ec2:us-east-1:022498999984:*/* with an explicit deny in a service control policy. Encoded authorization failure message: sgpGzRO-yVUDRYRLXqeUSds5p1kGAHbZdi2cNEC07AB6KEILRI5T7bkgGNSqxq88JOoXxI3dp5OstT6Qq27Kzl50M90NbJJ5XFPkW1NwYgIg4irlhrrZr_W1U0En1t9MN0QWuD6BwBsmNy0ky0lKyh60YQDz2eMg2T-97c0dNnV-o5pT4D8M9ahueTOC_ouXdJlZgcTkpZkVRoCE_5EEM0pyz6ZUcgQMJ8SukDgsJ2fKOQhiaJWTXm2hk-LMN7U7HPzeQRd3sDbMPWnL2L0GHJlDCjxUr0IEkTcT270c0YAn53gPw1j0m1YHYj0rFpqDhRiikHmLzCvcc2N93pozbQOUR48jsE5B9XDakN-KIuvvGUFxXpdqg1q4uRH1PeOn_ZVTPO8owaBXHekCh40vDUWn9S_I3rBRjkpYTT5UzKTzddtZZMmI71O-fImhp6QsjXoMy2mt0fX56vXEtidv-EC3Z4QX4bUGWYYsfbarMYNtfrDcuhlAPhWqvA7frUjtHow0xAQO4zsOUi41Hld2tk3FbqnR5TAblbfAt8vzDD8MD7W0mh106rBDATPCYTZhYMV1sUXAkhxl_t1_cT9vqr3o8uJRaVo3AmIz_DCRg87_vC_2OXlSfcFKQ3ERxyYANU4...",
+    "requestParameters": {
+        "CreateDefaultVpcRequest": ""
+    },
+    "responseElements": null,
+    "requestID": "9b92e42a-6662-4935-8765-421a90c29ec7",
+    "eventID": "863620ba-d609-4b1b-8adc-f1e5c7e8b5ce",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "022498999984",
+    "eventCategory": "Management",
+    "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "ec2.us-east-1.amazonaws.com"
+    },
+    "sessionCredentialFromConsole": "true"
+}
