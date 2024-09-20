@@ -1,0 +1,121 @@
+   variable "maps" {
+    description = "old maps"
+    type = list(object({
+        control_map = map(list(string))
+        organizational_unit_name = list(string)
+    }))
+
+}
+   old_guardrails_maps_list = flatten([
+    for i in range(0, length(var.maps) ) : [
+        for pair in setproduct (
+            lookup( element(var.maps , i).control_map ,var.ct_home_region) , element(var.maps, i).organizational_unit_name):
+            {"{$pair[0]} = pair[1]"}
+    ]
+   ])
+   
+   guardrails_map_list = flatten([for i in range( 0, length(var.new_maps))  :
+
+        for j in range(0 , length(     lookup( var.new_maps ,element( var.organizational_units ,i) ) )   ) : [
+
+            for pair in setproduct(
+                lookup(  lookup( var.new_maps ,element( var.organizational_units ,i) )    ,var.ct_home_region )
+            )
+        ]
+
+   ])
+
+
+   maps = [
+    {   
+        control_map = {
+            "ap_north_east_1" = ["arn:aws:controltower:ap-northeast-1::control/KNDLVQMVYRIW","arn:aws:controltower:ap-northeast-1::control/QBBKUFGDMMSM","arn:aws:controltower:ap-northeast-1::control/DDDZBLDXBNLI","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+
+            "ap_south_east_1" = ["arn:aws:controltower:ap-southeast-1::control/ZLTPOVDCNCGM","arn:aws:controltower:ap-southeast-1::control/FDIWDCPRVBUD","arn:aws:controltower:ap-southeast-1::control/YDWHLDLLQYKQ","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+
+            "eu_west_1" = ["arn:aws:controltower:eu-west-1::control/ESBANDFNAUPY","arn:aws:controltower:eu-west-1::control/EMUCXPDDRQRS","arn:aws:controltower:eu-west-1::control/DXEDENHXARDC","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+
+            "us_east_1" = ["arn:aws:controltower:us-east-1::control/QYNBJXVUADDJ","arn:aws:controltower:us-east-1::control/XFNEYNNZPTGL","arn:aws:controltower:us-east-1::control/XGEAULNJZNVE","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+            
+            "eu-west-2" = ["arn:aws:controltower:eu-west-2::control/YPAJJQFPQHZQ","arn:aws:controltower:eu-west-2::control/XNMPIQQUPZZQ","arn:aws:controltower:eu-west-2::control/VZAGIIIWANTB","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"]
+        }
+    organizational_unit_name = ["Nomura Wholesale"]
+    }
+]
+
+
+names_of_controls = {
+        Nomura_Wholesale = {
+            "ap_north_east_1" = ["CT.EC2.PV.1","CT.EC2.PV.2","CT.EC2.PV.3","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+
+            "ap_south_east_1" = ["CT.EC2.PV.1","CT.EC2.PV.2","CT.EC2.PV.3","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+
+            "eu_west_1" = ["CT.EC2.PV.1","CT.EC2.PV.2","CT.EC2.PV.3","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+
+            "us_east_1" = ["CT.EC2.PV.1","CT.EC2.PV.2","CT.EC2.PV.3","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"],
+            
+            "eu-west-2" = ["CT.EC2.PV.1","CT.EC2.PV.2","CT.EC2.PV.3","AWS-GR_RESTRICT_ROOT_USER_ACCESS_KEYS"]
+        }  
+        ,
+        Sandbox = {
+            "ap_north_east_1" = ["AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "ap_south_east_1" = ["AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "eu_west_1" = ["AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "us_east_1" = ["AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "eu-west-2" = ["AWS-GR_DISALLOW_VPN_CONNECTIONS"]
+        },
+        Security  = {
+            "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_RESTRICT_S3_DELETE_WITHOUT_MFA","AWS-GR_DISALLOW_VPC_INTERNET_ACCESS","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "ap_south_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_RESTRICT_S3_DELETE_WITHOUT_MFA","AWS-GR_DISALLOW_VPC_INTERNET_ACCESS","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "eu_west_1" =  ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_RESTRICT_S3_DELETE_WITHOUT_MFA","AWS-GR_DISALLOW_VPC_INTERNET_ACCESS","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "us_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_RESTRICT_S3_DELETE_WITHOUT_MFA","AWS-GR_DISALLOW_VPC_INTERNET_ACCESS","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "eu-west-2" =  ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_RESTRICT_S3_DELETE_WITHOUT_MFA","AWS-GR_DISALLOW_VPC_INTERNET_ACCESS","AWS-GR_DISALLOW_VPN_CONNECTIONS"]
+        },
+        Infrastructure = {
+            "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER"],
+            "ap_south_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu_west_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "us_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu-west-2" =  ["AWS-GR_RESTRICT_ROOT_USER"]
+        },
+        Vendor = {
+            "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER"],
+            "ap_south_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu_west_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "us_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu-west-2" =  ["AWS-GR_RESTRICT_ROOT_USER"]
+        },
+        POC = {
+            "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "ap_south_east_1" = ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "eu_west_1" = ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "us_east_1" = ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_DISALLOW_VPN_CONNECTIONS"],
+            "eu-west-2" = ["AWS-GR_RESTRICT_ROOT_USER","AWS-GR_DISALLOW_VPN_CONNECTIONS"]
+        },
+        Non_Production = {
+            "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER"],
+            "ap_south_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu_west_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "us_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu-west-2" =  ["AWS-GR_RESTRICT_ROOT_USER"]
+        } ,
+        Production = {
+           "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER"],
+            "ap_south_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu_west_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "us_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu-west-2" =  ["AWS-GR_RESTRICT_ROOT_USER"]
+        },
+        UAT = {
+            "ap_north_east_1" = ["AWS-GR_RESTRICT_ROOT_USER"],
+            "ap_south_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu_west_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "us_east_1" =  ["AWS-GR_RESTRICT_ROOT_USER"],
+            "eu-west-2" =  ["AWS-GR_RESTRICT_ROOT_USER"]
+        } 
+    }
+resource "aws_controltower_control" "guardrails" {
+    for_each = { for control in local.guardrails_list : join(":", [keys(control)[0], values(control)[0]]) => [keys(control)[0], values(control)[0]]}
+    control_identifier = each.value[0]
+    target_identifier = local.ous_name_to_arn_map[each.value[1]]
+}

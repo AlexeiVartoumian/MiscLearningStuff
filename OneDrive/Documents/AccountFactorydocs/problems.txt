@@ -1,0 +1,161 @@
+the problems I encountered trying to set this up.
+
+1. terraform state file not importing all resources.
+fix - importing manually each resource one by one 
+like so 
+-terraform import module.aft.module.aft_account_request_framework.aws_iam_role.aft_controltower_event_logger aft-lambda-controltower-event-logger
+
+terraform import module.aft.module.aft_account_request_framework.aws_iam_role.aft_account_request_processor aft-lambda-account-request-processor
+
+terraform import module.aft.module.aft_account_request_framework.aws_iam_role.aft_invoke_aft_account_provisioning_framework aft-lambda-invoke-aft-account-provisioning-framework
+
+terraform import module.aft.module.aft_account_request_framework.aws_iam_role.aft_cleanup_resources aft-lambda-cleanup-resources
+
+some resources were described as already imported or had to find the arn .
+absolutely need to import all resources otherwise triggerpoints will not be
+created
+
+2. codepipeline issues
+I used github as the source repositories. when terraform creates the bootstrapped resources one of which is the codepipeline you need to manually connect github to codepipeline thorugh codepipeline -> settings -> and enable connection. there is a pending connection that needs to be updated.
+
+even after that the pipelines on trigger had problems reading from the github connection. at first i thought it was because of how I defined it in the terraform.tfvars file. my fix was to again manually edit the source to point to the required repositories. 
+Instead of using the full GitHub URL, use the format: <account>/<repository-name>
+ for me it was: AlexeiVartoumian/learn-terraform-aft-account-request
+doing update change on the pipelines only then succeeded.
+succeeded as only the first stage of the pipeline the connection bit. then an actual error in the terraform code. to do with state!
+had to push to the code on the github repo again to import that \learn-terraform-aft-account-provisioning-customizations\terraform\iam.tf like this
+import {
+  to = aws_iam_role.aft_states
+  id = "aft-account-provisioning-customizations-role"
+}
+then the pipeline worked.
+
+3. Iam roles not configured properly
+even after the resources in terraform plan were to be changed was getting sts errors from the lambda account-request , the sts asssume role was not correctly configured for some reason. had to manually point the AFTAdmin role to a manually created IAM role that which had to be given access to service catalog in the control tower account. 
+after this the request was actually abe to be pushed to the sqs queue to be processed further
+
+eg found in cludwatch logs of aft account  : An error occurred (AccessDenied) when calling the AssumeRole operation: User: arn:aws:sts::381492108300:assumed-role/AWSAFTAdmin/AWSAFT-Session is not authorized to perform: sts:AssumeRole on resource: arn:aws:iam::390746273208:role/AWSAFTExecution
+
+in the control tower account trust permissions AWSAFTExecution role {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "AROAVRUVTTQGPZV6YNKZY",
+                    "AROAVRUVTTQGHQLTAWJAV"
+                ]
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+
+changed to {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": [
+                    "arn:aws:iam::381492108300:role/AWSAFTAdmin",
+                    "arn:aws:sts::381492108300:assumed-role/AWSAFTAdmin/AWSAFT-Session"
+                ]
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+
+
+
+4. rules to acc creation. encountered unexpected error cannot change sso lastname whenever i tried to push an update on my dummy acccount. all the cloudwatch logs on the lambda which listen every 5 mins via eventbridge to the sqs queue had this same error. eventually created another email alias and pushed a fresh account. saw this in the aws orgs  and in the proviosioned tab of aws service catalag.
+
+
+5. the problem still remains though that the global customisation request repo and the account customisation repo 
+are still not seen as code pipelines in the aft account. i suspect more config is required. shut down all the resources down though managed to create a dummy account is enough for now.
+
+
+initial account creation. once triggered it wont be visible right away that the account is created. a quick way to tell though is ito read through the clogs of 
+the lambda aft-request-processor and find the sqs message processing logs. example of which is included. 
+the provisioned product will have this id. pp-vc2ub3bi5aprm . back in the control tower account type in the below in cloudshell to see metadata.
+
+[cloudshell-user@ip-10-130-71-87 ~]$ aws servicecatalog describe-provisioned-product --id pp-od2z6cp5fhy76
+{
+    "ProvisionedProductDetail": {
+        "Name": "sandbox-aft",
+        "Arn": "arn:aws:servicecatalog:eu-west-2:390746273208:stack/sandbox-aft/pp-od2z6cp5fhy76",
+        "Type": "CONTROL_TOWER_ACCOUNT",
+        "Id": "pp-od2z6cp5fhy76",
+        "Status": "AVAILABLE",
+        "CreatedTime": "2024-07-27T17:53:56.196000+00:00",
+        "IdempotencyToken": "30d1fa06-4c41-11ef-b5b1-a3e298bca696",
+        "LastRecordId": "rec-zg44yfq6nfl3a",
+        "LastProvisioningRecordId": "rec-zg44yfq6nfl3a",
+        "LastSuccessfulProvisioningRecordId": "rec-zg44yfq6nfl3a",
+        "ProductId": "prod-l476vcmbhbnfi",
+        "ProvisioningArtifactId": "pa-6g4tj77pjpx7y"
+    },
+    "CloudWatchDashboards": []
+}
+[cloudshell-user@ip-10-130-71-87 ~]$ 
+
+6. problem 6 aft-capture-ct events rule for some reason was created in the 
+aft management account and not in the control tower account.
+that means whenever an account is created the rule is listening in the wrong bloody place!
+ 
+fix is to manually create this rule in the control tower account and point it to the aft-events-from-ct-management.
+ {
+  "detail": {
+    "eventName": ["CreateManagedAccount", "UpdateManagedAccount"]
+  },
+  "detail-type": ["AWS Service Event via CloudTrail"],
+  "source": ["aws.controltower"]
+}
+target-> arn:aws:events:eu-west-2:381492108300:event-bus/aft-events-from-ct-management 
+
+arn:aws:events:eu-west-2:381492108300:rule/aft-events-from-ct-management/aft-controltower-event-logger
+
+
+7. there are three pipelines even though there are four repos. tha global repo and local repo are in the same pipeline.
+when the third pipeline acc customizations is triggered then the step functions are also triggered .
+there are simple step functions such as the first one at the prvisioning stage and very complicated ones.
+
+how these step functions are ordered i do not know. however on the plus side i have found what appears to be an example repo of
+customisation where the state.asl file is further changed. https://github.com/aws-samples/aft-workshop-sample/tree/aft-alternate-contacts
+
+I could follow along with the tutorial but I absolutely need to know how step functions work at this is how acc facc will be implemented
+cool things about step functions is that they can be paused for one year with task tokens thats powerful.
+downside is of course learning the asl language.
+
+
+-- below doing post deployment customisations steps.
+organisations id = o-m9jr8f8hqe
+
+# in case of fup original state in both files changed
+C:\Users\alexv\OneDrive\Documents\AccountFactorydocs\learn-terraform-aft-account-provisioning-customizations\terraform\states
+
+{
+    "StartAt": "Pass",
+    "States": {
+      "Pass": {
+        "Type": "Pass",
+        "End": true
+      }
+    }
+}
+C:\Users\alexv\OneDrive\Documents\AccountFactorydocs\learn-terraform-aft-account-provisioning-customizations\terraform\iam\role-policies\iam-aft-states.tpl
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "states:Start*",
+            "Resource": "${account_provisioning_customizations_sfn_arn}"
+        }
+    ]
+}
+
+C:\Users\alexv\OneDrive\Documents\AccountFactorydocs\learn-terraform-aft-account-provisioning-customizations\terraform\iam.tf commented out stuff

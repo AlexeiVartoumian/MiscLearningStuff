@@ -1,0 +1,21 @@
+user_data  = <<-EOF
+            #!/bin/bash
+            echo "hello, world" > /home/ec2-user/hello.txt
+            sudo chmod 777 /home/ec2-user/hello.txt
+
+            cat << 'EOT' > /etc/systemd/system/log-processes.service
+            [Unit]
+            Description=Log Processes
+
+            [Service]
+            Type=oneshot
+            ExecStart=/bin/bash -c 'ps aux >> /home/ec2-user/hello.txt'
+
+            [Install]
+            WantedBy=multi-user.target
+            EOT
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable log-processes.service
+            sudo systemctl start log-processes.service
+            EOF
