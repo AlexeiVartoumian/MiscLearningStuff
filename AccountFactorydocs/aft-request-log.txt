@@ -1,0 +1,524 @@
+2024-07-30T13:06:35.329Z
+START RequestId: 9779d2c8-9f0c-4c40-8300-d18cab748f20 Version: $LATEST
+
+START RequestId: 9779d2c8-9f0c-4c40-8300-d18cab748f20 Version: $LATEST
+2024-07-30T13:06:35.505Z
+{
+    "time_stamp": "2024-07-30 13:06:35,505",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/account/aft-management/account-id"
+}
+
+{"time_stamp": "2024-07-30 13:06:35,505", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/account/aft-management/account-id"}
+2024-07-30T13:06:36.253Z
+{
+    "time_stamp": "2024-07-30 13:06:36,253",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/account/ct-management/account-id"
+}
+
+{"time_stamp": "2024-07-30 13:06:36,253", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/account/ct-management/account-id"}
+2024-07-30T13:06:36.304Z
+{
+    "time_stamp": "2024-07-30 13:06:36,303",
+    "module": "auth",
+    "log_level": "INFO",
+    "log_message": "No hub session provided, creating default hub session using AWSAFTAdmin role"
+}
+
+{"time_stamp": "2024-07-30 13:06:36,303", "module": "auth", "log_level": "INFO", "log_message": "No hub session provided, creating default hub session using AWSAFTAdmin role"}
+2024-07-30T13:06:36.307Z
+{
+    "time_stamp": "2024-07-30 13:06:36,307",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/iam/aft-administrator-role-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:36,307", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/iam/aft-administrator-role-name"}
+2024-07-30T13:06:36.366Z
+{
+    "time_stamp": "2024-07-30 13:06:36,366",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/iam/aft-session-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:36,366", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/iam/aft-session-name"}
+2024-07-30T13:06:37.222Z
+{
+    "time_stamp": "2024-07-30 13:06:37,221",
+    "module": "auth",
+    "log_level": "INFO",
+    "log_message": "Generating session using arn:aws:sts::381492108300:assumed-role/AWSAFTAdmin/AWSAFT-Session for arn:aws:iam::390746273208:role/AWSAFTService"
+}
+
+{"time_stamp": "2024-07-30 13:06:37,221", "module": "auth", "log_level": "INFO", "log_message": "Generating session using arn:aws:sts::381492108300:assumed-role/AWSAFTAdmin/AWSAFT-Session for arn:aws:iam::390746273208:role/AWSAFTService"}
+2024-07-30T13:06:38.019Z
+{
+    "time_stamp": "2024-07-30 13:06:38,019",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:38,019", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"}
+2024-07-30T13:06:38.067Z
+{
+    "time_stamp": "2024-07-30 13:06:38,066",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "Getting product ID for AWS Control Tower Account Factory"
+}
+
+{"time_stamp": "2024-07-30 13:06:38,066", "module": "service_catalog", "log_level": "INFO", "log_message": "Getting product ID for AWS Control Tower Account Factory"}
+2024-07-30T13:06:38.254Z
+{
+    "time_stamp": "2024-07-30 13:06:38,254",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "prod-l476vcmbhbnfi"
+}
+
+{"time_stamp": "2024-07-30 13:06:38,254", "module": "service_catalog", "log_level": "INFO", "log_message": "prod-l476vcmbhbnfi"}
+2024-07-30T13:06:38.733Z
+{
+    "time_stamp": "2024-07-30 13:06:38,733",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/account/ct-management/account-id"
+}
+
+{"time_stamp": "2024-07-30 13:06:38,733", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/account/ct-management/account-id"}
+2024-07-30T13:06:38.771Z
+{
+    "time_stamp": "2024-07-30 13:06:38,770",
+    "module": "auth",
+    "log_level": "INFO",
+    "log_message": "No hub session provided, creating default hub session using AWSAFTAdmin role"
+}
+
+{"time_stamp": "2024-07-30 13:06:38,770", "module": "auth", "log_level": "INFO", "log_message": "No hub session provided, creating default hub session using AWSAFTAdmin role"}
+2024-07-30T13:06:38.775Z
+{
+    "time_stamp": "2024-07-30 13:06:38,775",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/iam/aft-administrator-role-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:38,775", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/iam/aft-administrator-role-name"}
+2024-07-30T13:06:39.592Z
+{
+    "time_stamp": "2024-07-30 13:06:39,592",
+    "module": "auth",
+    "log_level": "INFO",
+    "log_message": "Generating session using arn:aws:sts::381492108300:assumed-role/AWSAFTAdmin/AWSAFT-Session for arn:aws:iam::390746273208:role/AWSAFTService"
+}
+
+{"time_stamp": "2024-07-30 13:06:39,592", "module": "auth", "log_level": "INFO", "log_message": "Generating session using arn:aws:sts::381492108300:assumed-role/AWSAFTAdmin/AWSAFT-Session for arn:aws:iam::390746273208:role/AWSAFTService"}
+2024-07-30T13:06:39.957Z
+{
+    "time_stamp": "2024-07-30 13:06:39,957",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Checking for account provisioning in progress"
+}
+
+{"time_stamp": "2024-07-30 13:06:39,957", "module": "account_request_framework", "log_level": "INFO", "log_message": "Checking for account provisioning in progress"}
+2024-07-30T13:06:40.027Z
+{
+    "time_stamp": "2024-07-30 13:06:40,027",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-cag7q2yxzamf2"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,027", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-cag7q2yxzamf2"}
+2024-07-30T13:06:40.027Z
+{
+    "time_stamp": "2024-07-30 13:06:40,027",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-tgcltw4flp7p2"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,027", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-tgcltw4flp7p2"}
+2024-07-30T13:06:40.027Z
+{
+    "time_stamp": "2024-07-30 13:06:40,027",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-gqx3jqfzwiny2"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,027", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-gqx3jqfzwiny2"}
+2024-07-30T13:06:40.028Z
+{
+    "time_stamp": "2024-07-30 13:06:40,028",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-5wf3ldhfl4sza"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,028", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-5wf3ldhfl4sza"}
+2024-07-30T13:06:40.028Z
+{
+    "time_stamp": "2024-07-30 13:06:40,028",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-klgvqk4nbyfw6"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,028", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-klgvqk4nbyfw6"}
+2024-07-30T13:06:40.028Z
+{
+    "time_stamp": "2024-07-30 13:06:40,028",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-od2z6cp5fhy76"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,028", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-od2z6cp5fhy76"}
+2024-07-30T13:06:40.028Z
+{
+    "time_stamp": "2024-07-30 13:06:40,028",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-zh5nwg3md7omc"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,028", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-zh5nwg3md7omc"}
+2024-07-30T13:06:40.028Z
+{
+    "time_stamp": "2024-07-30 13:06:40,028",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Identified CT Product - pp-l7seec2sj6uk6"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,028", "module": "account_request_framework", "log_level": "INFO", "log_message": "Identified CT Product - pp-l7seec2sj6uk6"}
+2024-07-30T13:06:40.137Z
+{
+    "time_stamp": "2024-07-30 13:06:40,137",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sqs/aft-request-queue-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,137", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sqs/aft-request-queue-name"}
+2024-07-30T13:06:40.518Z
+{
+    "time_stamp": "2024-07-30 13:06:40,518",
+    "module": "sqs",
+    "log_level": "INFO",
+    "log_message": "Fetching SQS Messages from https://sqs.eu-west-2.amazonaws.com/381492108300/aft-account-request.fifo"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,518", "module": "sqs", "log_level": "INFO", "log_message": "Fetching SQS Messages from https://sqs.eu-west-2.amazonaws.com/381492108300/aft-account-request.fifo"}
+2024-07-30T13:06:40.579Z
+{
+    "time_stamp": "2024-07-30 13:06:40,579",
+    "module": "sqs",
+    "log_level": "INFO",
+    "log_message": "There are messages pending processing"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,579", "module": "sqs", "log_level": "INFO", "log_message": "There are messages pending processing"}
+2024-07-30T13:06:40.580Z
+{
+    "time_stamp": "2024-07-30 13:06:40,580",
+    "module": "sqs",
+    "log_level": "INFO",
+    "log_message": "Message retrieved"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,580", "module": "sqs", "log_level": "INFO", "log_message": "Message retrieved"}
+2024-07-30T13:06:40.580Z
+{
+    "time_stamp": "2024-07-30 13:06:40,580",
+    "module": "sqs",
+    "log_level": "INFO",
+    "log_message": {
+        "MessageId": "af775bb7-6a89-4b22-8ff3-7c22bfe44d23",
+        "ReceiptHandle": "AQEBeGBaY3UUA7q9UEPDrFMLZvsXvY6K8BIVtlrv1h0ePIpsiqyz/jybTbUdDIz5w49vdqMIf4KKIvwSVxD9ESJr9CVhUWnc20bkuQUGAq6Eh4q/qmkJVB+JN850pfXO13SOW/Rp20pYFanS7r3pjz3DDg9wMz6jkzGV+kP8nyQZnVZdYZA0f+maMae8aHrhpZC/sG6fk5e4GKTVKjyfHdy/dg+ke6PJBUYLvv46BTeSBNHJJk8jgoNfwziFegr+6XY63T7OOqh2fVLhl2sFSzxrFHB7pw/V6u8bUJa5Dv5OMEc=",
+        "MD5OfBody": "0a46acaccf45c49d3ed7efcd6f3348c8",
+        "Body": "{\"operation\": \"ADD\", \"control_tower_parameters\": {\"SSOUserEmail\": \"alex.vartoumian+dummy4@gmail.com\", \"AccountEmail\": \"alex.vartoumian+dummy4@gmail.com\", \"SSOUserFirstName\": \"Sandbox\", \"SSOUserLastName\": \"AFT\", \"ManagedOrganizationalUnit\": \"AFT_management\", \"AccountName\": \"dummy-account\"}}"
+    }
+}
+
+{"time_stamp": "2024-07-30 13:06:40,580", "module": "sqs", "log_level": "INFO", "log_message": {"MessageId": "af775bb7-6a89-4b22-8ff3-7c22bfe44d23", "ReceiptHandle": "AQEBeGBaY3UUA7q9UEPDrFMLZvsXvY6K8BIVtlrv1h0ePIpsiqyz/jybTbUdDIz5w49vdqMIf4KKIvwSVxD9ESJr9CVhUWnc20bkuQUGAq6Eh4q/qmkJVB+JN850pfXO13SOW/Rp20pYFanS7r3pjz3DDg9wMz6jkzGV+kP8nyQZnVZdYZA0f+maMae8aHrhpZC/sG6fk5e4GKTVKjyfHdy/dg+ke6PJBUYLvv46BTeSBNHJJk8jgoNfwziFegr+6XY63T7OOqh2fVLhl2sFSzxrFHB7pw/V6u8bUJa5Dv5OMEc=", "MD5OfBody": "0a46acaccf45c49d3ed7efcd6f3348c8", "Body": "{\"operation\": \"ADD\", \"control_tower_parameters\": {\"SSOUserEmail\": \"alex.vartoumian+dummy4@gmail.com\", \"AccountEmail\": \"alex.vartoumian+dummy4@gmail.com\", \"SSOUserFirstName\": \"Sandbox\", \"SSOUserLastName\": \"AFT\", \"ManagedOrganizationalUnit\": \"AFT_management\", \"AccountName\": \"dummy-account\"}}"}}
+2024-07-30T13:06:40.802Z
+{
+    "time_stamp": "2024-07-30 13:06:40,802",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/account/aft-management/account-id"
+}
+
+{"time_stamp": "2024-07-30 13:06:40,802", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/account/aft-management/account-id"}
+2024-07-30T13:06:42.079Z
+{
+    "time_stamp": "2024-07-30 13:06:42,079",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/aft/version"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,079", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/aft/version"}
+2024-07-30T13:06:42.147Z
+{
+    "time_stamp": "2024-07-30 13:06:42,147",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": "Creating new account leveraging parameters: [{'Key': 'SSOUserEmail', 'Value': 'alex.vartoumian+dummy4@gmail.com'}, {'Key': 'AccountEmail', 'Value': 'alex.vartoumian+dummy4@gmail.com'}, {'Key': 'SSOUserFirstName', 'Value': 'Sandbox'}, {'Key': 'SSOUserLastName', 'Value': 'AFT'}, {'Key': 'ManagedOrganizationalUnit', 'Value': 'AFT_management'}, {'Key': 'AccountName', 'Value': 'dummy-account'}]"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,147", "module": "account_request_framework", "log_level": "INFO", "log_message": "Creating new account leveraging parameters: [{'Key': 'SSOUserEmail', 'Value': 'alex.vartoumian+dummy4@gmail.com'}, {'Key': 'AccountEmail', 'Value': 'alex.vartoumian+dummy4@gmail.com'}, {'Key': 'SSOUserFirstName', 'Value': 'Sandbox'}, {'Key': 'SSOUserLastName', 'Value': 'AFT'}, {'Key': 'ManagedOrganizationalUnit', 'Value': 'AFT_management'}, {'Key': 'AccountName', 'Value': 'dummy-account'}]"}
+2024-07-30T13:06:42.154Z
+{
+    "time_stamp": "2024-07-30 13:06:42,154",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,154", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"}
+2024-07-30T13:06:42.215Z
+{
+    "time_stamp": "2024-07-30 13:06:42,215",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "Getting product ID for AWS Control Tower Account Factory"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,215", "module": "service_catalog", "log_level": "INFO", "log_message": "Getting product ID for AWS Control Tower Account Factory"}
+2024-07-30T13:06:42.393Z
+{
+    "time_stamp": "2024-07-30 13:06:42,393",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "prod-l476vcmbhbnfi"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,393", "module": "service_catalog", "log_level": "INFO", "log_message": "prod-l476vcmbhbnfi"}
+2024-07-30T13:06:42.403Z
+{
+    "time_stamp": "2024-07-30 13:06:42,403",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,403", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"}
+2024-07-30T13:06:42.454Z
+{
+    "time_stamp": "2024-07-30 13:06:42,454",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "Getting provisioning artifact ID for AWS Control Tower Account Factory"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,454", "module": "service_catalog", "log_level": "INFO", "log_message": "Getting provisioning artifact ID for AWS Control Tower Account Factory"}
+2024-07-30T13:06:42.642Z
+{
+    "time_stamp": "2024-07-30 13:06:42,642",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,642", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"}
+2024-07-30T13:06:42.688Z
+{
+    "time_stamp": "2024-07-30 13:06:42,688",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "Checking provisioning artifact ID pa-lfnz35pu44bl6"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,688", "module": "service_catalog", "log_level": "INFO", "log_message": "Checking provisioning artifact ID pa-lfnz35pu44bl6"}
+2024-07-30T13:06:42.800Z
+{
+    "time_stamp": "2024-07-30 13:06:42,800",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "pa-lfnz35pu44bl6 is NOT active"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,800", "module": "service_catalog", "log_level": "INFO", "log_message": "pa-lfnz35pu44bl6 is NOT active"}
+2024-07-30T13:06:42.810Z
+{
+    "time_stamp": "2024-07-30 13:06:42,810",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,810", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sc/account-factory-product-name"}
+2024-07-30T13:06:42.857Z
+{
+    "time_stamp": "2024-07-30 13:06:42,857",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "Checking provisioning artifact ID pa-6g4tj77pjpx7y"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,857", "module": "service_catalog", "log_level": "INFO", "log_message": "Checking provisioning artifact ID pa-6g4tj77pjpx7y"}
+2024-07-30T13:06:42.967Z
+{
+    "time_stamp": "2024-07-30 13:06:42,967",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "pa-6g4tj77pjpx7y is active"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,967", "module": "service_catalog", "log_level": "INFO", "log_message": "pa-6g4tj77pjpx7y is active"}
+2024-07-30T13:06:42.968Z
+{
+    "time_stamp": "2024-07-30 13:06:42,968",
+    "module": "service_catalog",
+    "log_level": "INFO",
+    "log_message": "Using provisioning artifact ID: pa-6g4tj77pjpx7y"
+}
+
+{"time_stamp": "2024-07-30 13:06:42,968", "module": "service_catalog", "log_level": "INFO", "log_message": "Using provisioning artifact ID: pa-6g4tj77pjpx7y"}
+2024-07-30T13:06:44.594Z
+{
+    "time_stamp": "2024-07-30 13:06:44,594",
+    "module": "account_request_framework",
+    "log_level": "INFO",
+    "log_message": {
+        "RecordDetail": {
+            "RecordId": "rec-yf4ufovmr3y6o",
+            "ProvisionedProductName": "dummy-account",
+            "Status": "CREATED",
+            "CreatedTime": "2024-07-30T13:06:44.338000+00:00",
+            "UpdatedTime": "2024-07-30T13:06:44.349000+00:00",
+            "ProvisionedProductType": "CONTROL_TOWER_ACCOUNT",
+            "RecordType": "PROVISION_PRODUCT",
+            "ProvisionedProductId": "pp-vc2ub3bi5aprm",
+            "ProductId": "prod-l476vcmbhbnfi",
+            "ProvisioningArtifactId": "pa-6g4tj77pjpx7y",
+            "PathId": "lpv3-dzzghuqbtqsdo",
+            "RecordErrors": [],
+            "RecordTags": []
+        },
+        "ResponseMetadata": {
+            "RequestId": "04d2edd5-db04-4de9-ada6-ab2aabecae46",
+            "HTTPStatusCode": 200,
+            "HTTPHeaders": {
+                "x-amzn-requestid": "04d2edd5-db04-4de9-ada6-ab2aabecae46",
+                "content-type": "application/x-amz-json-1.1",
+                "content-length": "436",
+                "date": "Tue, 30 Jul 2024 13:06:44 GMT"
+            },
+            "RetryAttempts": 0
+        }
+    }
+}
+
+{"time_stamp": "2024-07-30 13:06:44,594", "module": "account_request_framework", "log_level": "INFO", "log_message": {"RecordDetail": {"RecordId": "rec-yf4ufovmr3y6o", "ProvisionedProductName": "dummy-account", "Status": "CREATED", "CreatedTime": "2024-07-30T13:06:44.338000+00:00", "UpdatedTime": "2024-07-30T13:06:44.349000+00:00", "ProvisionedProductType": "CONTROL_TOWER_ACCOUNT", "RecordType": "PROVISION_PRODUCT", "ProvisionedProductId": "pp-vc2ub3bi5aprm", "ProductId": "prod-l476vcmbhbnfi", "ProvisioningArtifactId": "pa-6g4tj77pjpx7y", "PathId": "lpv3-dzzghuqbtqsdo", "RecordErrors": [], "RecordTags": []}, "ResponseMetadata": {"RequestId": "04d2edd5-db04-4de9-ada6-ab2aabecae46", "HTTPStatusCode": 200, "HTTPHeaders": {"x-amzn-requestid": "04d2edd5-db04-4de9-ada6-ab2aabecae46", "content-type": "application/x-amz-json-1.1", "content-length": "436", "date": "Tue, 30 Jul 2024 13:06:44 GMT"}, "RetryAttempts": 0}}}
+2024-07-30T13:06:44.600Z
+{
+    "time_stamp": "2024-07-30 13:06:44,600",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/metrics-reporting"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,600", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/metrics-reporting"}
+2024-07-30T13:06:44.662Z
+{
+    "time_stamp": "2024-07-30 13:06:44,662",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/aft/version"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,662", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/aft/version"}
+2024-07-30T13:06:44.709Z
+{
+    "time_stamp": "2024-07-30 13:06:44,709",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/metrics-reporting-uuid"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,709", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/metrics-reporting-uuid"}
+2024-07-30T13:06:44.777Z
+{
+    "time_stamp": "2024-07-30 13:06:44,777",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/feature/cloudtrail-data-events-enabled"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,777", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/feature/cloudtrail-data-events-enabled"}
+2024-07-30T13:06:44.844Z
+{
+    "time_stamp": "2024-07-30 13:06:44,844",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/feature/enterprise-support-enabled"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,844", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/feature/enterprise-support-enabled"}
+2024-07-30T13:06:44.897Z
+{
+    "time_stamp": "2024-07-30 13:06:44,897",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/feature/delete-default-vpcs-enabled"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,897", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/feature/delete-default-vpcs-enabled"}
+2024-07-30T13:06:44.957Z
+{
+    "time_stamp": "2024-07-30 13:06:44,957",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/aft/version"
+}
+
+{"time_stamp": "2024-07-30 13:06:44,957", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/aft/version"}
+2024-07-30T13:06:45.018Z
+{
+    "time_stamp": "2024-07-30 13:06:45,018",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/config/terraform/version"
+}
+
+{"time_stamp": "2024-07-30 13:06:45,018", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/config/terraform/version"}
+2024-07-30T13:06:45.509Z
+{
+    "time_stamp": "2024-07-30 13:06:45,508",
+    "module": "aft_account_request_processor",
+    "log_level": "INFO",
+    "log_message": "Successfully logged metrics. Action: new-account-creation-invoked"
+}
+
+{"time_stamp": "2024-07-30 13:06:45,508", "module": "aft_account_request_processor", "log_level": "INFO", "log_message": "Successfully logged metrics. Action: new-account-creation-invoked"}
+2024-07-30T13:06:45.518Z
+{
+    "time_stamp": "2024-07-30 13:06:45,518",
+    "module": "ssm",
+    "log_level": "INFO",
+    "log_message": "Getting SSM Parameter /aft/resources/sqs/aft-request-queue-name"
+}
+
+{"time_stamp": "2024-07-30 13:06:45,518", "module": "ssm", "log_level": "INFO", "log_message": "Getting SSM Parameter /aft/resources/sqs/aft-request-queue-name"}
+2024-07-30T13:06:45.573Z
+{
+    "time_stamp": "2024-07-30 13:06:45,573",
+    "module": "sqs",
+    "log_level": "INFO",
+    "log_message": "Deleting SQS message with handle AQEBeGBaY3UUA7q9UEPDrFMLZvsXvY6K8BIVtlrv1h0ePIpsiqyz/jybTbUdDIz5w49vdqMIf4KKIvwSVxD9ESJr9CVhUWnc20bkuQUGAq6Eh4q/qmkJVB+JN850pfXO13SOW/Rp20pYFanS7r3pjz3DDg9wMz6jkzGV+kP8nyQZnVZdYZA0f+maMae8aHrhpZC/sG6fk5e4GKTVKjyfHdy/dg+ke6PJBUYLvv46BTeSBNHJJk8jgoNfwziFegr+6XY63T7OOqh2fVLhl2sFSzxrFHB7pw/V6u8bUJa5Dv5OMEc="
+}
+
+{"time_stamp": "2024-07-30 13:06:45,573", "module": "sqs", "log_level": "INFO", "log_message": "Deleting SQS message with handle AQEBeGBaY3UUA7q9UEPDrFMLZvsXvY6K8BIVtlrv1h0ePIpsiqyz/jybTbUdDIz5w49vdqMIf4KKIvwSVxD9ESJr9CVhUWnc20bkuQUGAq6Eh4q/qmkJVB+JN850pfXO13SOW/Rp20pYFanS7r3pjz3DDg9wMz6jkzGV+kP8nyQZnVZdYZA0f+maMae8aHrhpZC/sG6fk5e4GKTVKjyfHdy/dg+ke6PJBUYLvv46BTeSBNHJJk8jgoNfwziFegr+6XY63T7OOqh2fVLhl2sFSzxrFHB7pw/V6u8bUJa5Dv5OMEc="}
+2024-07-30T13:06:45.952Z
+END RequestId: 9779d2c8-9f0c-4c40-8300-d18cab748f20

@@ -1,0 +1,314 @@
+ssh -i "name of pem file" "ec2-user@ some-ipv4" -> connect to ec2 instance
+
+sudo yum install httpd -> get an apache server running
+
+sudo systemctl start httpd -> start apache server
+
+sudo systemctl enable httpd 
+
+sudo systemctl status httpd -> check system is runnning
+
+
+ls -ld "some directory" -> check permissions assigned to the user
+
+sudo chmod +x -> execurte 
+
+sudo chmod o+rw /var/www/html/ -> assign others read-write acces on designated file
+
+sudo chmod g+rwx /var/www/html/ -> assign group write access on desingated file could also be 
+
+
+C:\xampp\htdocs\TestApp
+
+// installing mysql you have to get the link otherwise no dice 
+sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm 
+sudo yum install mysql-community-server
+systemctl start mysqld.service
+//
+
+yum list installed -> see installed stuff optional add | grep php-mysql to filter
+
+ sudo yum install php-mysqlnd -> for some reason aws-linux ami knows about this php-mysql
+
+ ------installing mysql community server
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+sudo yum install mysql-community-server
+
+sudo systemctl stop mysqld
+sudo systemctl start mysqld
+sudo systemctl status mysqld
+
+-------------------setting up mysql on ec2 pass word stuff-------------------
+To install MYSQL, use the following commands:
+
+sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+
+wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm -> download a file from the web. instance myust have internet access
+
+sudo yum localinstall -y mysql57-community-release-el7-8.noarch.rpm
+sudo yum install -y mysql-community-server
+Start MYSQL and enable it to run on system boot:
+
+sudo systemctl start mysqld 
+sudo systemctl enable mysqld 
+Retrieve the root password:
+
+sudo grep 'temporary password' /var/log/mysqld.log
+Log in to MYSQL:
+
+mysql -u root -p
+Change the root password: IMPORTANT! ONCE IN SQL EVERYTHING IS CLOSED OFF WITH SEMI-COLONS
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'somepassword';
+----------------------
+SHOW DATABASES; -> show available databses
+USE "name of databse"; select database to use
+SHOW TABLES; -> once above selected shows the tables of all selected databasr
+----------------------
+SELECT user FROM mysql.user; -> shows users of database
+QUIT; -> syntax to log out of mysql
+
+
+source /tmp/some path to sql files; -> importing sql files to db remember to CREATE DATABASE "somename"; then USE "somename";
+------------------------------------------------------------------------------------
+
+------------------------------Installing Java onto ec2------------------------------
+
+sudo yum install java-21
+
+
+
+find /home -type f -name "somefile" -exec dirname {} \; -> show where filepath of the directory
+
+ps aux -> show all currently running processes
+
+ps aux | grep "someprocess" -> see if a named process is running
+
+sudo kill #pid -> kill a process
+
+java Xmx700m -jar someApp.jar -> run a program but with a restricting heap memory in this case to 700 megabytes
+
+nohup java -cp /home/ec2-user/SimpleServer/out/production/Mainclass/ MainclasstoRun & -> IMPORTANT! compile classes before and then run this command . ANOTHER IMPORTANT! make sure to include & at the end! otherwise process will stop running.
+
+# could also create an executable jar file and use that instead
+nohup java -jar /home/ec2-user/SimpleServer.jar &
+--------------------------------------------------------------------------------------------------------------------
+
+           where your key lives        where you want to copy from              where you want it 
+scp -r -i /folder/whree/secret/key.pem ec2-user@private.ip.addr.40:nameofDir /where/you/want/it/to/go  -> secure copy an entire directory with the -r recursive copy. otherwise for singluar files its the same but no -r. 
+scp -r -i /var/tmp/in/Try.pem /var/www/SimpleServer ec2-user@172.31.6.40:
+-------------- network configurations--------------
+netstat -tuln | grep PORT-NUmber ->  see which process is listening on a port
+
+curl http://some.ip.addr.00:8081   -> check if a specific port is active
+
+
+------------- using tcp dump --------------
+
+ifconfig -> check ip addresses and specifically what devices are used for this i.e snipper
+enX0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 172.31.6.40  netmask 255.255.240.0  broadcast 172.31.15.255
+        inet6 fe80::aa:7eff:fec5:3453  prefixlen 64  scopeid 0x20<link>
+        ether 02:aa:7e:c5:34:53  txqueuelen 1000  (Ethernet)
+        
+
+
+sudo tcpdump -i enX0 tcp port 8081 -n -X -w nohup.out -> // run tcp dump once once device known i.e enX0 and see what packets come to a port and write to nohup.out replucae with file of choice
+
+
+
+
+ssh -i /var/tmp/in/Try.pem ec2-user@172.31.6.40
+
+scp -i /var/tmp/in/Try.pem ec2-user@172.31.6.40:server.log.0 /tmp/
+
+scp -i /var/tmp/in/Try.pem ec2-user@172.31.6.40:nohup.out /tmp/
+
+curl -d "linkName=Computer+Systems+and+Archtecture" http://172.31.6.40:8081
+
+scp -r -i /var/tmp/in/Try.pem /var/www/SimpleServer ec2-user@172.31.6.40:
+
+curl -d "linkName=Software+and+Programming+III" http://172.31.6.40:8081
+
+ssh-keygen -y -f C:\path\to\private\key\file.pem -> returns the public key association with this pem file.
+
+
+------------------------- Creating a autoboot SystemD .service-------------------------
+#general note -> making sure the files have the right permissions in correlation to each other.
+
+sudo nano /etc/systemd/system/Name-of-Serice.service -> creates a Unit specifically to deal with applications see restart.service in folder for desc i.e will include Type of service , pathfile to sh file to execute , remainAlive so it does not terminate immediately etc
+
+sudo chmod+x or 744 /etc/systemd/system/some-service.service -> give necesseary permissions to execute
+
+sudo nano /home/ec2-user/ec2-java-Server-Reboot.sh -> creates the executable script to be run i.e terminal commands that are run automatically
+
+sudo systemctl enable ec2-java-Server-Reboot.sh -> create a symlink to allow the service to execute
+
+sudo systemctl daemon-reload -> if changes to file made will reload process
+
+sudo systemctl restart someservice.service -> restart the serice
+
+sudo systemctl status restart.service -> similar to below but for current process
+
+sudo journalctl -u restart.service -> IMPORTANT! great debugging tool see verbose journal of all executions of that process
+
+sudo bash /path/to/some/shell/script.sh -> manually execute script
+
+-------------------------------------Creating a basic Terrafom module-----------------------
+                        prereq -> download terraform and updagte path varibales and have baked up amis
+terraform init -> works on a tf file initalising the file to begin working with it 
+
+terraform plan -> shows all the things the tf file will apply i.e to which subnet , public dns , private ip security groups and so on
+
+terraform apply -> spins up the resources!
+
+terraform destroy -> destroys/terminates resources associated with the tf file
+
+terraform plan -var file = "nameoffile.tfvars" -> depending on which variables you want switched pass in as command line argument i.e difference between prod and staging inside tfvars file will be the hardcoded values that get passed into the varibales.tf file on execution 
+
+
+
+terraform state pull -> "IMPORTANT"  terraform file needs somwhere to pull from  basically version control
+
+terraform state push -> updates file but not best prac if more then one developer
+
+terraform workspace new "name of workspace "-> similar to git checkout -b , create a new branch , use in conjuction with tfvars
+
+terraform workspace list -> see all workspaces/branches current workspace denoted with *
+
+terraform workspace show -> shows current working directory
+
+terraform workspace select "name of workspace"-> select this workspace and switcht into it
+
+-------------------------------- CREATING LOG FILES iIN TERRAFORM---------------------
+#slightly different then in a UNIX style system , since im on a windows machines this is the steps to do so on a powershell ps create the logfile.log before hand!
+
+set TF_LOG=DEBUG 
+$env:TF_LOG = "DEBUG" -> set the environment variabl
+echo $env:TF_LOG -> verify that it woks
+$env:TF_LOG_PATH = "C:\some\path\to/logfile.log" -> set the environemnt variable to write to this location
+
+for unix systems 
+export TF_LOG=DEBUG
+echo $TF_LOG
+export TF_LOG_PATH="C:some\path\to/debug.log"
+
+------------------------------ CREATING BASIC IMAGE and RUNNING it with DOCKER ------------------------
+
+on local
+prereq -> have docker installed. BEfore executing any of the commands a Dockerfile is needed to input declarative style commands. looks kinda sqly where the runtime is declared, the directory is declared , the application is copied in and entrypoint and cmd but not sure what that is yet.
+
+NOTE! there is a dot on the end of some of these commands
+
+docker build -t name-of-image . -> build image and give it a name  -t is the tag that references the image
+
+docker build -f C:\Uses\the\absolute\path\to\Dockerfile -t name-of-image . -> run the Docker file
+
+docker run name-of-image:latest    -> run the bloody thing
+
+-------------------------------------------- DOcker for ec2-----------------------------
+install prereqs
+
+sudo yum install docker -y -> install docker on ec2
+sudo systemctl start docker
+sudo systemctl enable docker
+
+port over the app and the Dockerfile
+
+sudo docker build -t name-of-image .  -> REMEMBER THE DOT AT THE END
+
+sudo docker run -p 8081:8081 my-demo-server -> mapping the port to the container port
+
+sudo docker image ls -> see list of built images
+
+sudo docker run -d -p 8081:8081 my-demo-server -> run the dockerfile as a background process  NOte -d stands for detached mode 
+and -p stands for publish mode
+
+sudo docker ps -a -> shows all containers including ones that are not running and the images they are associated with.
+
+sudo docker rm <containerId> -> delete container
+
+sudo docker start <containerID> -> start container
+
+sudo docker pull nginx:latest -> grab a image from docker hub
+
+
+-------------------------------------------------docker compose for multiple containers ----------------------------------------
+"need to write a yaml file called docker-compose.yml where specs are detailed so that docker compose knows about it "
+
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o docker-compose -> install docker-compose make sure to chmod +x so can execute
+
+sudo docker-compose up -d -> command to run all the containers that docker-compose knows about -d flag is to run in detached mode.
+
+sudo docker logs name-of-containter -> see logs of container if available
+
+sudo docker network ls -> see available networks of the 
+sudo docker network inspect name-of-network -> see additional information such as which containers are attached to network
+
+
+
+
+#nohup java -cp /home/ec2-user/SimpleSend.java &
+
+-----------------------------------------------------
+
+sudo chown ec2-user:ec2-user /path/to/some-resource.sh -> CHANGE OWNERSHIP OF RESOURCE/FILE. lefthand side of colon is the new owner right handside the new group
+
+---------------------------------------------------------------------------------------
+
+
+aws s3 cp .\bobs_file.txt s3://mygitlabbucket2024/bobs_file -> aws command to copy into s3 bucket
+
+#how to manually add additiaonl user on  aws cli
+aws configure list-profiles -> list profiles tied to aws cli
+
+aws configure --profile "some user" -> sets an additional user tied to the aws cli , need access key and secret key region and output format
+
+
+# how to manually deelte a user on aws cli on windows machines
+# cd into .aws folder
+notepad credentials -> delete content and save file 
+notepad config -> delete content and save file
+
+-------------------------------------------------------------------------------------------
+
+---------------------------------------------lambda stuff-----------------------------------
+##creating a vitual python environement for windows machines
+
+py -m venv .venv
+
+## then the directory should now have a virtual env folder. type in the path where the Scripts bat file lives
+i.each
+py .\.venv\Scripts\activate
+python -m pip install -r requirements.txt  -> once env setup install dependencies inside of venv to avoid global package conflicts
+
+pip install requests -t ./package  -> for lambda put all imports that lambda cannot read natively into packages folder mkdir package beforehand
+
+
+#compressing zip folders for lambda on windows
+Compress-Archive -Path lambda_function.py -DestinationPath lambda_function.zip -Force
+Compress-Archive -Path package/* -Update -DestinationPath lambda_function.zip
+
+----------------------------------------- db with postgres on ec2 instance-------
+
+follow this guide https://www.linkedin.com/pulse/how-install-postgresql-amazon-linux-trong-luong-van-bfsqc/
+
+however at step 6  Configure PostgreSQL dothe below to set password for postgres user 
+
+sudo passwd postgres -> type in password twice
+su - postgres -> logging in as postgres thereafter. ec2-user changes to postgre
+
+when editing files makes sure they are uncommented!
+download pg4 and input the user that was created plus the password during setup in the link.
+
+venv then
+pip install fastapi uvicorn sqlalchemy psycopg2-binary
+uvicorn app.main:app --reload --> starts localserver
+
+curl -X POST "http://localhost:8000/books/" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"title\": \"To Kill a Mockingbird\", \"author\": \"Harper Lee\", \"description\": \"A classic of modern American literature\"}"
+
+curl -X GET "http://localhost:8000/books/" -H "accept: application/json"
+
+
+
