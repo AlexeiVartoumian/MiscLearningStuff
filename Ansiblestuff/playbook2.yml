@@ -1,0 +1,21 @@
+---
+- name: Create S3 bucket
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    aws_region: eu-west-2
+    bucket_name: my-unique-bucket-name-{{ 999 | random }}
+    
+  tasks:
+    - name: Create S3 bucket
+      s3_bucket:
+        name: "{{ bucket_name }}"
+        region: "{{ aws_region }}"
+        policy: private
+      register: s3_result
+
+    - name: Show S3 bucket creation result
+      debug:
+        var: s3_result

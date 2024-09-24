@@ -1,0 +1,208 @@
+{
+    "Comment": "Execute Ansible Playbooks separately using SSM Run Command with AWS-ApplyAnsiblePlaybooks",
+    "StartAt": "InstallDependencies",
+    "States": {
+      "InstallDependencies": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:sendCommand",
+        "Parameters": {
+          "DocumentName": "AWS-RunShellScript",
+          "InstanceIds.$": "States.Array($.TargetInstanceId)",
+          "Parameters": {
+            "commands": [
+              "#!/bin/bash",
+              "yum update -y",
+              "yum install -y ansible python3-pip",
+              "pip3 install boto3 botocore",
+              "ansible-galaxy collection install amazon.aws"
+            ]
+          }
+        },
+        "Next": "WaitForInstallation",
+        "ResultPath": "$.InstallDependenciesResult"
+      },
+      "WaitForInstallation": {
+        "Type": "Wait",
+        "Seconds": 60,
+        "Next": "ExecutePlaybook1"
+      },
+      "ExecutePlaybook1": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:sendCommand",
+        "Parameters": {
+          "DocumentName": "AWS-ApplyAnsiblePlaybooks",
+          "InstanceIds.$": "States.Array($.TargetInstanceId)",
+          "Parameters": {
+            "SourceType": ["S3"],
+            "SourceInfo": ["{\"path\":\"https://s3.amazonaws.com/somebuckethaha/playbooks.zip\"}"],
+            "InstallDependencies": ["False"],
+            "PlaybookFile": ["playbook1.yml"],
+            "ExtraVariables": ["SSM=True"],
+            "Check": ["False"],
+            "Verbose": ["-v"]
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": ["States.ALL"],
+            "IntervalSeconds": 30,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Next": "WaitForPlaybook1",
+        "ResultPath": "$.ExecutePlaybook1Result"
+      },
+      "WaitForPlaybook1": {
+        "Type": "Wait",
+        "Seconds": 60,
+        "Next": "CheckPlaybook1Status"
+      },
+      "CheckPlaybook1Status": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:getCommandInvocation",
+        "Parameters": {
+          "CommandId.$": "$.ExecutePlaybook1Result.Command.CommandId",
+          "InstanceId.$": "$.TargetInstanceId"
+        },
+        "Next": "EvaluatePlaybook1Status"
+      },
+      "EvaluatePlaybook1Status": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.Status",
+            "StringEquals": "Success",
+            "Next": "ExecutePlaybook2"
+          },
+          {
+            "Variable": "$.Status",
+            "StringEquals": "InProgress",
+            "Next": "WaitForPlaybook1"
+          }
+        ],
+        "Default": "FailState"
+      },
+      "ExecutePlaybook2": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:sendCommand",
+        "Parameters": {
+          "DocumentName": "AWS-ApplyAnsiblePlaybooks",
+          "InstanceIds.$": "States.Array($.TargetInstanceId)",
+          "Parameters": {
+            "SourceType": ["S3"],
+            "SourceInfo": ["{\"path\":\"https://s3.amazonaws.com/somebuckethaha/playbooks.zip\"}"],
+            "InstallDependencies": ["False"],
+            "PlaybookFile": ["playbook2.yml"],
+            "ExtraVariables": ["SSM=True"],
+            "Check": ["False"],
+            "Verbose": ["-v"]
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": ["States.ALL"],
+            "IntervalSeconds": 30,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Next": "WaitForPlaybook2",
+        "ResultPath": "$.ExecutePlaybook2Result"
+      },
+      "WaitForPlaybook2": {
+        "Type": "Wait",
+        "Seconds": 60,
+        "Next": "CheckPlaybook2Status"
+      },
+      "CheckPlaybook2Status": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:getCommandInvocation",
+        "Parameters": {
+          "CommandId.$": "$.ExecutePlaybook2Result.Command.CommandId",
+          "InstanceId.$": "$.TargetInstanceId"
+        },
+        "Next": "EvaluatePlaybook2Status"
+      },
+      "EvaluatePlaybook2Status": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.Status",
+            "StringEquals": "Success",
+            "Next": "ExecutePlaybook3"
+          },
+          {
+            "Variable": "$.Status",
+            "StringEquals": "InProgress",
+            "Next": "WaitForPlaybook2"
+          }
+        ],
+        "Default": "FailState"
+      },
+      "ExecutePlaybook3": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:sendCommand",
+        "Parameters": {
+          "DocumentName": "AWS-ApplyAnsiblePlaybooks",
+          "InstanceIds.$": "States.Array($.TargetInstanceId)",
+          "Parameters": {
+            "SourceType": ["S3"],
+            "SourceInfo": ["{\"path\":\"https://s3.amazonaws.com/somebuckethaha/playbooks.zip\"}"],
+            "InstallDependencies": ["False"],
+            "PlaybookFile": ["playbook3.yml"],
+            "ExtraVariables": ["SSM=True"],
+            "Check": ["False"],
+            "Verbose": ["-v"]
+          }
+        },
+        "Retry": [
+          {
+            "ErrorEquals": ["States.ALL"],
+            "IntervalSeconds": 30,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "Next": "WaitForPlaybook3",
+        "ResultPath": "$.ExecutePlaybook3Result"
+      },
+      "WaitForPlaybook3": {
+        "Type": "Wait",
+        "Seconds": 60,
+        "Next": "CheckPlaybook3Status"
+      },
+      "CheckPlaybook3Status": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:ssm:getCommandInvocation",
+        "Parameters": {
+          "CommandId.$": "$.ExecutePlaybook3Result.Command.CommandId",
+          "InstanceId.$": "$.TargetInstanceId"
+        },
+        "Next": "EvaluatePlaybook3Status"
+      },
+      "EvaluatePlaybook3Status": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.Status",
+            "StringEquals": "Success",
+            "Next": "SuccessState"
+          },
+          {
+            "Variable": "$.Status",
+            "StringEquals": "InProgress",
+            "Next": "WaitForPlaybook3"
+          }
+        ],
+        "Default": "FailState"
+      },
+      "SuccessState": {
+        "Type": "Succeed"
+      },
+      "FailState": {
+        "Type": "Fail",
+        "Cause": "Ansible Playbook execution failed"
+      }
+    }
+  }

@@ -1,0 +1,29 @@
+---
+- name: Create IAM user
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    user_name: new_iam_user_{{ 999 | random }}
+    
+  tasks:
+    - name: Create IAM user
+      iam:
+        iam_type: user
+        name: "{{ user_name }}"
+        state: present
+        access_key_state: create
+      register: iam_result
+
+    - name: Show IAM user creation result
+      debug:
+        var: iam_result
+
+    - name: Save access keys to file
+      copy:
+        content: |
+          Access Key ID: {{ iam_result.user_meta.access_keys[0].access_key_id }}
+          Secret Access Key: {{ iam_result.user_meta.access_keys[0].secret_access_key }}
+        dest: "/tmp/{{ user_name }}_access_keys.txt"
+      when: iam_result.changed
