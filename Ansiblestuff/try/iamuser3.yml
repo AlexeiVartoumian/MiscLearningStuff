@@ -1,5 +1,5 @@
 ---
-- name: IAM User-Group Assignment
+- name: Create IAM User and Group
   hosts: localhost
   connection: local
   gather_facts: false
@@ -27,49 +27,12 @@
       ansible.builtin.debug:
         var: user_creation
 
-    - name: Wait for user creation to propagate
-      ansible.builtin.pause:
-        seconds: 15
-
-    - name: Verify user exists
-      amazon.aws.iam_user_info:
-        name: "{{ user_name }}"
-      register: user_info
-      until: user_info.iam_users | length > 0
-      retries: 6
-      delay: 10
-
-    - name: Display user info
-      ansible.builtin.debug:
-        var: user_info
-
-    - name: Add user to group
-      amazon.aws.iam_group:
-        name: "{{ group_name }}"
-        users:
-          - "{{ user_name }}"
+    - name: Create access key for user
+      amazon.aws.iam_access_key:
+        user_name: "{{ user_name }}"
         state: present
-      register: add_user_result
-      until: add_user_result is not failed
-      retries: 3
-      delay: 10
-      ignore_errors: yes
+      register: user_access_key
 
-    - name: Display group assignment result
+    - name: Display access key info (DO NOT SHARE IN PRODUCTION)
       ansible.builtin.debug:
-        var: add_user_result
-
-    - name: Check group membership
-      amazon.aws.iam_group:
-        name: "{{ group_name }}"
-        state: present
-      register: group_info
-
-    - name: Display group info
-      ansible.builtin.debug:
-        var: group_info
-
-    - name: Fail if user not in group
-      ansible.builtin.fail:
-        msg: "Failed to add user {{ user_name }} to group {{ group_name }}"
-      when: user_name not in (group_info.iam_group.users | default([]))
+        msg: "Access Key: {{ user_access_key.access_key }} / Secret: {{ user_access_key.secret_key }}"

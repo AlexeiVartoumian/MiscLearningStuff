@@ -1,0 +1,75 @@
+---
+- name: IAM User-Group Assignment
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    user_name: "test-user-{{ 999 | random }}"
+    group_name: "test-group-{{ 999 | random }}"
+  tasks:
+    - name: Create IAM group
+      amazon.aws.iam_group:
+        name: "{{ group_name }}"
+        state: present
+      register: group_creation
+
+    - name: Display group creation result
+      ansible.builtin.debug:
+        var: group_creation
+
+    - name: Create IAM user
+      amazon.aws.iam_user:
+        name: "{{ user_name }}"
+        state: present
+      register: user_creation
+
+    - name: Display user creation result
+      ansible.builtin.debug:
+        var: user_creation
+
+    - name: Wait for user creation to propagate
+      ansible.builtin.pause:
+        seconds: 15
+
+    - name: Verify user exists
+      amazon.aws.iam_user_info:
+        name: "{{ user_name }}"
+      register: user_info
+      until: user_info.iam_users | length > 0
+      retries: 6
+      delay: 10
+
+    - name: Display user info
+      ansible.builtin.debug:
+        var: user_info
+
+    - name: Add user to group
+      amazon.aws.iam_group:
+        name: "{{ group_name }}"
+        users:
+          - "{{ user_name }}"
+        state: present
+      register: add_user_result
+      until: add_user_result is not failed
+      retries: 3
+      delay: 10
+      ignore_errors: yes
+
+    - name: Display group assignment result
+      ansible.builtin.debug:
+        var: add_user_result
+
+    - name: Check group membership
+      amazon.aws.iam_group:
+        name: "{{ group_name }}"
+        state: present
+      register: group_info
+
+    - name: Display group info
+      ansible.builtin.debug:
+        var: group_info
+
+    - name: Fail if user not in group
+      ansible.builtin.fail:
+        msg: "Failed to add user {{ user_name }} to group {{ group_name }}"
+      when: user_name not in (group_info.iam_group.users | default([]))
