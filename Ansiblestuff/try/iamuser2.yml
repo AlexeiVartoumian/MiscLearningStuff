@@ -18,12 +18,28 @@
         state: present
       register: new_user
 
-    - name: Add user to group
-      community.aws.iam_group:
-        name: "{{ group_name }}"
-        users:
-          - "{{ user_name }}"
-        state: present
+    - name: Add user to group with retries
+      block:
+        - name: Add user to group
+          community.aws.iam_group:
+            name: "{{ group_name }}"
+            users:
+              - "{{ user_name }}"
+            state: present
+          register: add_user_result
+          until: add_user_result is not failed
+          retries: 10
+          delay: 10
+      rescue:
+        - name: Wait after failure
+          ansible.builtin.pause:
+            seconds: 30
+        - name: Retry adding user to group
+          community.aws.iam_group:
+            name: "{{ group_name }}"
+            users:
+              - "{{ user_name }}"
+            state: present
 
     - name: Create access key for user
       community.aws.iam_access_key:
