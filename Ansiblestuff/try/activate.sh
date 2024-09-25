@@ -39,7 +39,16 @@ unzip ansible_aws_package.zip
 
 
 
+sudo mv ansible_venv/bin/ansible* /usr/local/bin/
+sudo nano /usr/lib/python3.x/site-packages/ansible.pth
+add below to above file
+ansible_venv/lib/python3.x/site-packages
+
+
 [defaults]
-collections_paths = /path/to/unzipped/package/ansible_venv/lib/python3.x/site-packages/ansible_collections
-library = /path/to/unzipped/package/ansible_venv/lib/python3.x/site-packages/ansible/modules
-module_utils = /path/to/unzipped/package/ansible_venv/lib/python3.x/site-packages/ansible/module_utils
+collections_paths = ansible_venv/lib/python3.x/site-packages/ansible_collections
+library = /ansible_venv/lib/python3.x/site-packages/ansible/modules
+module_utils = /ansible_venv/lib/python3.x/site-packages/ansible/module_utils
+
+
+echo 'export PATH=$PATH:/home/ec2-user/ansible_aws_package/ansible_venv/bin' >> ~/.bashrc
