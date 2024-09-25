@@ -36,3 +36,10 @@ unzip ansible_aws_package.zip
 
 
 ./run_ansible.sh test_aws.yml
+
+
+
+[defaults]
+collections_paths = /path/to/unzipped/package/ansible_venv/lib/python3.x/site-packages/ansible_collections
+library = /path/to/unzipped/package/ansible_venv/lib/python3.x/site-packages/ansible/modules
+module_utils = /path/to/unzipped/package/ansible_venv/lib/python3.x/site-packages/ansible/module_utils
