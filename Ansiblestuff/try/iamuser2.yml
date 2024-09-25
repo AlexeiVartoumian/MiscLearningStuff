@@ -8,48 +8,47 @@
     group_name: "test-group-{{ 999 | random }}"
   tasks:
     - name: Create IAM group
-      community.aws.iam_group:
+      amazon.aws.iam_group:
         name: "{{ group_name }}"
         state: present
 
     - name: Create IAM user
-      community.aws.iam_user:
+      amazon.aws.iam_user:
         name: "{{ user_name }}"
         state: present
       register: new_user
+      until: new_user is not failed
+      retries: 3
+      delay: 10
 
-    - name: Add user to group with retries
-      block:
-        - name: Add user to group
-          community.aws.iam_group:
-            name: "{{ group_name }}"
-            users:
-              - "{{ user_name }}"
-            state: present
-          register: add_user_result
-          until: add_user_result is not failed
-          retries: 10
-          delay: 10
-      rescue:
-        - name: Wait after failure
-          ansible.builtin.pause:
-            seconds: 30
-        - name: Retry adding user to group
-          community.aws.iam_group:
-            name: "{{ group_name }}"
-            users:
-              - "{{ user_name }}"
-            state: present
+    - name: Ensure IAM user exists
+      amazon.aws.iam_user_info:
+        name: "{{ user_name }}"
+      register: user_info
+      until: user_info.iam_users | length > 0
+      retries: 10
+      delay: 5
+
+    - name: Add user to group
+      amazon.aws.iam_group:
+        name: "{{ group_name }}"
+        users:
+          - "{{ user_name }}"
+        state: present
+      register: add_user_result
+      until: add_user_result is not failed
+      retries: 5
+      delay: 10
 
     - name: Create access key for user
-      community.aws.iam_access_key:
+      amazon.aws.iam_access_key:
         user_name: "{{ user_name }}"
         state: present
       register: user_access_key
 
     - name: Display new user info
       ansible.builtin.debug:
-        var: new_user
+        var: user_info
 
     - name: Display access key info (DO NOT SHARE IN PRODUCTION)
       ansible.builtin.debug:
