@@ -1,0 +1,32 @@
+---
+- name: AWS Operations with Custom CLI Path
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Set facts for AWS CLI path
+      set_fact:
+        aws_cli_path: "/tmp/linker"
+
+    - name: Get AWS caller identity
+      community.aws.aws_caller_info:
+      environment:
+        PATH: "{{ aws_cli_path }}:{{ ansible_env.PATH }}"
+      register: caller_info
+
+    - name: Display caller identity
+      debug:
+        var: caller_info
+
+    - name: List S3 buckets
+      amazon.aws.s3_bucket_info:
+      environment:
+        PATH: "{{ aws_cli_path }}:{{ ansible_env.PATH }}"
+      register: s3_buckets
+
+    - name: Display S3 buckets
+      debug:
