@@ -197,3 +197,8 @@ for path in collections_paths:
                 print(f"  - {item}")
     else:
         print(f"\n{path} does not exist")
+
+
+[defaults]
+collections_paths = /home/ec2-user/ansible_venv/lib/python3.*/site-packages/ansible_collections:~/.ansible/collections:/usr/share/ansible/collections
+library = /home/ec2-user/ansible_venv/lib/python3.*/site-packages/ansible/modules:/usr/share/ansible/plugins/modules
