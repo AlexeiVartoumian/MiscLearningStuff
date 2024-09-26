@@ -101,3 +101,38 @@ case "$1" in
         exit 1
         ;;
 esac
+
+
+
+#!/bin/bash
+
+set -e
+
+VENV_DIR="/home/ec2-user/ansible_venv"
+BIN_DIR="/usr/local/bin"
+
+# List of executables to symlink
+EXECUTABLES=(
+    "ansible-playbook"
+    "ansible-galaxy"
+    "ansible-community"
+    "pip"
+    "pip3"
+    "ansible"
+)
+
+# Create symlinks
+for exec in "${EXECUTABLES[@]}"; do
+    if [ -f "$VENV_DIR/bin/$exec" ]; then
+        sudo ln -sf "$VENV_DIR/bin/$exec" "$BIN_DIR/$exec"
+        echo "Created symlink for $exec"
+    else
+        echo "Warning: $exec not found in $VENV_DIR/bin"
+    fi
+done
+
+# Set up environment variables
+echo "export PYTHONPATH=$VENV_DIR/lib/python3.*/site-packages:\$PYTHONPATH" | sudo tee /etc/profile.d/ansible_env.sh
+echo "export ANSIBLE_COLLECTIONS_PATH=$VENV_DIR/lib/python3.*/site-packages/ansible_collections" | sudo tee -a /etc/profile.d/ansible_env.sh
+
+echo "Ansible tools have been set up globally. Please log out and log back in for the changes to take effect."
