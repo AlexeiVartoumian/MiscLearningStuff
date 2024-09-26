@@ -22,19 +22,25 @@ pip install ansible --trusted-host pypi.org --trusted-host files.pythonhosted.or
 ansible-galaxy collection install amazon.aws --ignore-certs
 ansible-galaxy collection install community.aws --ignore-certs
 
+# Get the Python version
+PY_VERSION=$(python -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
+
 # Create a wrapper script for Ansible commands
 cat > $PACKAGE_DIR/ansible_wrapper.sh << EOL
 #!/bin/bash
 SCRIPT_DIR="/opt/ansible_package"
 source "\$SCRIPT_DIR/ansible_venv/bin/activate"
-export ANSIBLE_COLLECTIONS_PATH="\$SCRIPT_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections"
-export ANSIBLE_LIBRARY="\$SCRIPT_DIR/ansible_venv/lib/python3.*/site-packages/ansible/modules"
+export ANSIBLE_COLLECTIONS_PATH="\$SCRIPT_DIR/ansible_venv/lib/$PY_VERSION/site-packages/ansible_collections"
+export ANSIBLE_LIBRARY="\$SCRIPT_DIR/ansible_venv/lib/$PY_VERSION/site-packages/ansible/modules"
 export PIP_TRUSTED_HOST="pypi.org files.pythonhosted.org"
 export PIP_NO_CACHE_DIR=1
 export PIP_CERT=""
 export ANSIBLE_HOST_KEY_CHECKING=False
 export ANSIBLE_CONFIG="\$SCRIPT_DIR/ansible.cfg"
-"\$SCRIPT_DIR/ansible_venv/bin/\$(basename \$0)" "\$@" --ignore-certs
+
+COMMAND=\$(basename "\$0")
+"\$SCRIPT_DIR/ansible_venv/bin/\$COMMAND" "\$@"
+
 deactivate
 EOL
 
@@ -43,8 +49,8 @@ chmod +x $PACKAGE_DIR/ansible_wrapper.sh
 # Create ansible.cfg
 cat > $PACKAGE_DIR/ansible.cfg << EOL
 [defaults]
-collections_paths = /opt/ansible_package/ansible_venv/lib/python3.*/site-packages/ansible_collections
-library = /opt/ansible_package/ansible_venv/lib/python3.*/site-packages/ansible/modules
+collections_paths = /opt/ansible_package/ansible_venv/lib/$PY_VERSION/site-packages/ansible_collections
+library = /opt/ansible_package/ansible_venv/lib/$PY_VERSION/site-packages/ansible/modules
 host_key_checking = False
 EOL
 
@@ -67,6 +73,9 @@ sudo chmod -R 755 \$INSTALL_DIR
 sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible
 sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible-playbook
 sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible-galaxy
+
+# Ensure the symlinks are executable
+sudo chmod 755 /usr/local/bin/ansible /usr/local/bin/ansible-playbook /usr/local/bin/ansible-galaxy
 
 # Set environment variables
 echo "export ANSIBLE_CONFIG=\$INSTALL_DIR/ansible.cfg" | sudo tee -a /etc/environment
