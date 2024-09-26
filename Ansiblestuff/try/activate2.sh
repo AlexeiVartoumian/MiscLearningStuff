@@ -12,15 +12,15 @@ python3 -m venv $PACKAGE_DIR/ansible_venv
 # Activate the virtual environment
 source $PACKAGE_DIR/ansible_venv/bin/activate
 
-# Upgrade pip
-pip install --upgrade pip
+# Upgrade pip with TLS verification disabled
+pip install --upgrade pip --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir --cert=""
 
-# Install Ansible
-pip install ansible
+# Install Ansible with TLS verification disabled
+pip install ansible --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir --cert=""
 
-# Install AWS collections
-ansible-galaxy collection install amazon.aws -p $PACKAGE_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections
-ansible-galaxy collection install community.aws -p $PACKAGE_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections
+# Install AWS collections with certificate verification ignored
+ansible-galaxy collection install amazon.aws --ignore-certs -p $PACKAGE_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections
+ansible-galaxy collection install community.aws --ignore-certs -p $PACKAGE_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections
 
 # Create a wrapper script for Ansible commands
 cat > $PACKAGE_DIR/ansible_wrapper.sh << EOL
@@ -29,7 +29,11 @@ SCRIPT_DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
 source "\$SCRIPT_DIR/ansible_venv/bin/activate"
 export ANSIBLE_COLLECTIONS_PATH="\$SCRIPT_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections"
 export ANSIBLE_LIBRARY="\$SCRIPT_DIR/ansible_venv/lib/python3.*/site-packages/ansible/modules"
-"\$SCRIPT_DIR/ansible_venv/bin/\$1" "\${@:2}"
+export PIP_TRUSTED_HOST="pypi.org files.pythonhosted.org"
+export PIP_NO_CACHE_DIR=1
+export PIP_CERT=""
+export ANSIBLE_HOST_KEY_CHECKING=False
+"\$SCRIPT_DIR/ansible_venv/bin/\$1" "\${@:2}" --ignore-certs
 deactivate
 EOL
 
@@ -40,6 +44,7 @@ cat > $PACKAGE_DIR/ansible.cfg << EOL
 [defaults]
 collections_paths = ./ansible_venv/lib/python3.*/site-packages/ansible_collections
 library = ./ansible_venv/lib/python3.*/site-packages/ansible/modules
+host_key_checking = False
 EOL
 
 # Create installation script
@@ -60,6 +65,10 @@ sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible-galaxy
 
 # Set the ANSIBLE_CONFIG environment variable
 echo "export ANSIBLE_CONFIG=\$INSTALL_DIR/ansible.cfg" | sudo tee -a /etc/environment
+echo "export PIP_TRUSTED_HOST='pypi.org files.pythonhosted.org'" | sudo tee -a /etc/environment
+echo "export PIP_NO_CACHE_DIR=1" | sudo tee -a /etc/environment
+echo "export PIP_CERT=''" | sudo tee -a /etc/environment
+echo "export ANSIBLE_HOST_KEY_CHECKING=False" | sudo tee -a /etc/environment
 
 echo "Ansible package installed successfully!"
 echo "Please log out and log back in, or run 'source /etc/environment' to use Ansible commands globally."
@@ -79,6 +88,8 @@ To install:
 3. Log out and log back in, or run: source /etc/environment
 
 After installation, you can use ansible, ansible-playbook, and ansible-galaxy commands globally.
+
+Note: This package is configured to bypass TLS verification for pip installations and ignore certificate checks for Ansible Galaxy.
 EOL
 
 # Create the zip package
