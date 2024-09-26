@@ -172,3 +172,28 @@ else
     echo "Error: $COMMAND not found in $VENV_DIR/bin"
     exit 1
 fi
+
+
+
+import sys
+import os
+import ansible
+import ansible.constants as C
+
+print(f"Python version: {sys.version}")
+print(f"Ansible version: {ansible.__version__}")
+print(f"Ansible executable: {sys.executable}")
+print(f"PYTHONPATH: {os.environ.get('PYTHONPATH', 'Not set')}")
+print(f"ANSIBLE_COLLECTIONS_PATH: {os.environ.get('ANSIBLE_COLLECTIONS_PATH', 'Not set')}")
+print(f"Ansible default collections paths: {C.DEFAULT_COLLECTIONS_PATHS}")
+print(f"Ansible configured collections paths: {C.COLLECTIONS_PATHS}")
+print("\nInstalled collections:")
+collections_paths = C.COLLECTIONS_PATHS or C.DEFAULT_COLLECTIONS_PATHS
+for path in collections_paths:
+    if os.path.exists(path):
+        print(f"\nCollections in {path}:")
+        for item in os.listdir(path):
+            if os.path.isdir(os.path.join(path, item)):
+                print(f"  - {item}")
+    else:
+        print(f"\n{path} does not exist")
