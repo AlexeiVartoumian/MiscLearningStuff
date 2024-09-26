@@ -154,3 +154,21 @@ else
     echo "Error: $COMMAND not found in $VENV_DIR/bin"
     exit 1
 fi
+
+#!/bin/bash
+
+VENV_DIR="/home/ec2-user/ansible_venv"
+PYTHON_VERSION=$(ls "$VENV_DIR/lib/" | grep python)
+
+export PYTHONPATH="$VENV_DIR/lib/$PYTHON_VERSION/site-packages:$PYTHONPATH"
+export ANSIBLE_COLLECTIONS_PATH="$VENV_DIR/lib/$PYTHON_VERSION/site-packages/ansible_collections:$HOME/.ansible/collections:/usr/share/ansible/collections"
+export ANSIBLE_LIBRARY="$VENV_DIR/lib/$PYTHON_VERSION/site-packages/ansible/modules:/usr/share/ansible/plugins/modules"
+
+COMMAND=$(basename "$0")
+
+if [ -f "$VENV_DIR/bin/$COMMAND" ]; then
+    exec "$VENV_DIR/bin/python" "$VENV_DIR/bin/$COMMAND" "$@"
+else
+    echo "Error: $COMMAND not found in $VENV_DIR/bin"
+    exit 1
+fi
