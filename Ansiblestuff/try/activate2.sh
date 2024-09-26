@@ -25,6 +25,11 @@ ansible-galaxy collection install community.aws --ignore-certs
 # Get the Python version
 PY_VERSION=$(python -c "import sys; print(f'python{sys.version_info.major}.{sys.version_info.minor}')")
 
+# Find Ansible executables
+ANSIBLE_PATH=$(find $PACKAGE_DIR/ansible_venv -name ansible -type f -executable)
+ANSIBLE_PLAYBOOK_PATH=$(find $PACKAGE_DIR/ansible_venv -name ansible-playbook -type f -executable)
+ANSIBLE_GALAXY_PATH=$(find $PACKAGE_DIR/ansible_venv -name ansible-galaxy -type f -executable)
+
 # Create a wrapper script for Ansible commands
 cat > $PACKAGE_DIR/ansible_wrapper.sh << EOL
 #!/bin/bash
@@ -38,10 +43,21 @@ export PIP_CERT=""
 export ANSIBLE_HOST_KEY_CHECKING=False
 export ANSIBLE_CONFIG="\$SCRIPT_DIR/ansible.cfg"
 
-COMMAND=\$(basename "\$0")
-"\$SCRIPT_DIR/ansible_venv/bin/\$COMMAND" "\$@"
-
-deactivate
+case "\$(basename \$0)" in
+    ansible)
+        exec "\$SCRIPT_DIR/ansible_venv/bin/ansible" "\$@"
+        ;;
+    ansible-playbook)
+        exec "\$SCRIPT_DIR/ansible_venv/bin/ansible-playbook" "\$@"
+        ;;
+    ansible-galaxy)
+        exec "\$SCRIPT_DIR/ansible_venv/bin/ansible-galaxy" "\$@"
+        ;;
+    *)
+        echo "Unknown command: \$0"
+        exit 1
+        ;;
+esac
 EOL
 
 chmod +x $PACKAGE_DIR/ansible_wrapper.sh
