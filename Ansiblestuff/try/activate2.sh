@@ -25,7 +25,7 @@ ansible-galaxy collection install community.aws --ignore-certs
 # Create a wrapper script for Ansible commands
 cat > $PACKAGE_DIR/ansible_wrapper.sh << EOL
 #!/bin/bash
-SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="/opt/ansible_package"
 source "\$SCRIPT_DIR/ansible_venv/bin/activate"
 export ANSIBLE_COLLECTIONS_PATH="\$SCRIPT_DIR/ansible_venv/lib/python3.*/site-packages/ansible_collections"
 export ANSIBLE_LIBRARY="\$SCRIPT_DIR/ansible_venv/lib/python3.*/site-packages/ansible/modules"
@@ -33,7 +33,8 @@ export PIP_TRUSTED_HOST="pypi.org files.pythonhosted.org"
 export PIP_NO_CACHE_DIR=1
 export PIP_CERT=""
 export ANSIBLE_HOST_KEY_CHECKING=False
-"\$SCRIPT_DIR/ansible_venv/bin/\$1" "\${@:2}" --ignore-certs
+export ANSIBLE_CONFIG="\$SCRIPT_DIR/ansible.cfg"
+"\$SCRIPT_DIR/ansible_venv/bin/\$(basename \$0)" "\$@" --ignore-certs
 deactivate
 EOL
 
@@ -42,8 +43,8 @@ chmod +x $PACKAGE_DIR/ansible_wrapper.sh
 # Create ansible.cfg
 cat > $PACKAGE_DIR/ansible.cfg << EOL
 [defaults]
-collections_paths = ./ansible_venv/lib/python3.*/site-packages/ansible_collections
-library = ./ansible_venv/lib/python3.*/site-packages/ansible/modules
+collections_paths = /opt/ansible_package/ansible_venv/lib/python3.*/site-packages/ansible_collections
+library = /opt/ansible_package/ansible_venv/lib/python3.*/site-packages/ansible/modules
 host_key_checking = False
 EOL
 
@@ -52,22 +53,22 @@ cat > $PACKAGE_DIR/install.sh << EOL
 #!/bin/bash
 set -e
 
-SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="/opt/ansible_package"
 
 # Create the installation directory
 sudo mkdir -p \$INSTALL_DIR
-sudo cp -R \$SCRIPT_DIR/* \$INSTALL_DIR
+sudo cp -R . \$INSTALL_DIR
 
-# Update paths in ansible_wrapper.sh
-sudo sed -i "s|SCRIPT_DIR=.*|SCRIPT_DIR=\"\$INSTALL_DIR\"|" \$INSTALL_DIR/ansible_wrapper.sh
+# Set correct permissions
+sudo chown -R root:root \$INSTALL_DIR
+sudo chmod -R 755 \$INSTALL_DIR
 
 # Create global symlinks for Ansible commands
 sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible
 sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible-playbook
 sudo ln -sf \$INSTALL_DIR/ansible_wrapper.sh /usr/local/bin/ansible-galaxy
 
-# Set the ANSIBLE_CONFIG environment variable
+# Set environment variables
 echo "export ANSIBLE_CONFIG=\$INSTALL_DIR/ansible.cfg" | sudo tee -a /etc/environment
 echo "export PIP_TRUSTED_HOST='pypi.org files.pythonhosted.org'" | sudo tee -a /etc/environment
 echo "export PIP_NO_CACHE_DIR=1" | sudo tee -a /etc/environment
@@ -88,7 +89,7 @@ This package contains Ansible and required AWS collections.
 
 To install:
 1. Unzip this package
-2. Navigate to the directory containing install.sh
+2. Navigate to the unzipped directory
 3. Run: sudo ./install.sh
 4. Log out and log back in, or run: source /etc/environment
 
