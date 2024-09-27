@@ -10,3 +10,11 @@
       amazon.aws.iam_user:
         name: "tonytime"
       register: iam_user_result
+
+    - name: List S3 buckets
+      amazon.aws.s3_bucket_info:
+      register: s3_bucket_list
+
+    - name: Display S3 buckets
+      debug:
+        var: s3_bucket_list
