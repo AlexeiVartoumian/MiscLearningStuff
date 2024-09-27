@@ -1,0 +1,32 @@
+---
+- name: Create SNS Topic
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+
+  vars:
+    topic_name: "my-ansible-topic-{{ 999 | random }}"
+    region: "us-east-1"  # Change this to your preferred region
+
+  tasks:
+    - name: Create SNS topic
+      amazon.aws.sns_topic:
+        name: "{{ topic_name }}"
+        state: present
+        region: "{{ region }}"
+      register: sns_result
+
+    - name: Display SNS topic creation result
+      debug:
+        var: sns_result
+
+    - name: List SNS topics
+      amazon.aws.sns_topic_info:
+        region: "{{ region }}"
+      register: sns_topics
+
+    - name: Display SNS topics
+      debug:
+        var: sns_topics.topics
