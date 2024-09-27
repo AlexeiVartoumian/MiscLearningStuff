@@ -18,3 +18,35 @@
     - name: Display S3 buckets
       debug:
         var: s3_bucket_list
+
+---
+- name: Create IAM user
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Create IAM user
+      amazon.aws.iam_user:
+        name: "tonytime"
+        state: present
+      register: iam_user_result
+      vars:
+        ansible_aws_sdk_ec2: boto3
+      ignore_errors: yes
+
+    - name: Debug IAM user creation
+      debug:
+        var: iam_user_result
+
+    - name: Check AWS credentials
+      aws_caller_info:
+      register: caller_info
+      ignore_errors: yes
+
+    - name: Debug AWS credentials
+      debug:
+        var: caller_info
