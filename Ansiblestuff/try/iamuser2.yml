@@ -1,0 +1,55 @@
+---
+- name: Create IAM User and Group
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    user_name: "test-user-{{ 999 | random }}"
+    group_name: "test-group-{{ 999 | random }}"
+  tasks:
+    - name: Create IAM group
+      amazon.aws.iam_group:
+        name: "{{ group_name }}"
+        state: present
+
+    - name: Create IAM user
+      amazon.aws.iam_user:
+        name: "{{ user_name }}"
+        state: present
+      register: new_user
+      until: new_user is not failed
+      retries: 3
+      delay: 10
+
+    - name: Ensure IAM user exists
+      amazon.aws.iam_user_info:
+        name: "{{ user_name }}"
+      register: user_info
+      until: user_info.iam_users | length > 0
+      retries: 10
+      delay: 5
+
+    - name: Add user to group
+      amazon.aws.iam_group:
+        name: "{{ group_name }}"
+        users:
+          - "{{ user_name }}"
+        state: present
+      register: add_user_result
+      until: add_user_result is not failed
+      retries: 5
+      delay: 10
+
+    - name: Create access key for user
+      amazon.aws.iam_access_key:
+        user_name: "{{ user_name }}"
+        state: present
+      register: user_access_key
+
+    - name: Display new user info
+      ansible.builtin.debug:
+        var: user_info
+
+    - name: Display access key info (DO NOT SHARE IN PRODUCTION)
+      ansible.builtin.debug:
+        msg: "Access Key: {{ user_access_key.access_key }} / Secret: {{ user_access_key.secret_key }}"

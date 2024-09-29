@@ -1,0 +1,17 @@
+# Demo Jinja Template
+
+# Timestamp: {{ timestamp }}
+# Provider Region: {{ provider_region }}
+# Terraform Distribution Type: {{ tf_distribution_type }}
+# Terraform Organization Name: {{ terraform_org_name }}
+# Terraform Workspace Name: {{ terraform_workspace_name }}
+# AFT Admin Role ARN: {{ aft_admin_role_arn }}
+
+resource "demo_resource" "example" {
+  name = "Example Resource"
+  org  = "{{ terraform_org_name }}"
+}
+
+output "org_name" {
+  value = "{{ terraform_org_name }}"
+}

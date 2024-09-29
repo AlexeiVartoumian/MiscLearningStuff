@@ -1,0 +1,152 @@
+{
+    "Comment": "Audio transcription and sentiment analysis state machine with file checks and renaming",
+    "StartAt": "PrepareFileName",
+    "States": {
+      "PrepareFileName": {
+        "Type": "Pass",
+        "Parameters": {
+          "fileName.$": "States.ArrayGetItem(States.StringSplit($.fileName, '.'), 0)",
+          "fileExtension.$": "$.fileExtension"
+        },
+        "Next": "Check Transcription File Exists"
+      },
+      "Check Transcription File Exists": {
+        "Type": "Task",
+        "Parameters": {
+          "Bucket": "alexeitranscribefile",
+          "Key.$": "States.Format('{}.json', $.fileName)"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:s3:headObject",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "ResultPath": "$.error",
+            "Next": "Pass"
+          }
+        ],
+        "Next": "Success"
+      },
+      "Pass": {
+        "Type": "Pass",
+        "Parameters": {
+          "fileName.$": "$.fileName",
+          "fileExtension.$": "$.fileExtension"
+        },
+        "Next": "StartCallTranscriptionJob"
+      },
+      "StartCallTranscriptionJob": {
+        "Type": "Task",
+        "Parameters": {
+          "LanguageCode": "en-US",
+          "Media": {
+            "MediaFileUri.$": "States.Format('s3://alexeitranscribefile/{}.{}', $.fileName,$.fileExtension)"
+          },
+          "TranscriptionJobName.$": "$$.Execution.Name",
+          "OutputBucketName": "alexeitranscribefile"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:transcribe:startTranscriptionJob",
+        "Next": "Wait two seconds"
+      },
+      "Wait two seconds": {
+        "Type": "Wait",
+        "Seconds": 2,
+        "Next": "GetTranscriptionJob"
+      },
+      "GetTranscriptionJob": {
+        "Type": "Task",
+        "Parameters": {
+          "TranscriptionJobName.$": "$$.Execution.Name"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:transcribe:getTranscriptionJob",
+        "Next": "Transcript Status"
+      },
+      "Transcript Status": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.TranscriptionJob.TranscriptionJobStatus",
+            "StringEquals": "COMPLETED",
+            "Next": "Rename Transcription File"
+          },
+          {
+            "Variable": "$.TranscriptionJob.TranscriptionJobStatus",
+            "StringEquals": "IN_PROGRESS",
+            "Next": "Wait two seconds"
+          }
+        ],
+        "Default": "Fail"
+      },
+      "Rename Transcription File": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "arn:aws:lambda:eu-west-2:390746273208:function:rename-transcription-file",
+          "Payload.$": "$.TranscriptionJob"
+        },
+        "Next": "Extract New File Name",
+        "ResultPath": "$.renameResult"
+      },
+      "Extract New File Name": {
+        "Type": "Pass",
+        "Parameters": {
+          "fileName.$": "States.ArrayGetItem(States.StringSplit($.renameResult.Payload.body, ' '), 4)",
+          "TranscriptionJob.$": "$.TranscriptionJob"
+        },
+        "Next": "GetObject"
+      },
+      "GetObject": {
+        "Type": "Task",
+        "Parameters": {
+          "Bucket": "alexeitranscribefile",
+          "Key.$": "$.fileName"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
+        "ResultPath": "$.s3Object",
+        "Next": "Parse S3 Response"
+      },
+      "Parse S3 Response": {
+        "Type": "Pass",
+        "Parameters": {
+          "ParsedBody.$": "States.StringToJson($.s3Object.Body)",
+          "fileName.$": "$.fileName"
+        },
+        "Next": "DetectSentiment"
+      },
+      "DetectSentiment": {
+        "Type": "Task",
+        "Parameters": {
+          "LanguageCode": "en",
+          "Text.$": "$.ParsedBody.results.transcripts[0].transcript"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:comprehend:detectSentiment",
+        "ResultPath": "$.sentimentResult",
+        "Next": "FormatSentimentResult"
+      },
+      "FormatSentimentResult": {
+        "Type": "Pass",
+        "Parameters": {
+          "fileName.$": "$.fileName",
+          "sentimentResult.$": "$.sentimentResult"
+        },
+        "Next": "Store Sentiment Result"
+      },
+      "Store Sentiment Result": {
+        "Type": "Task",
+        "Parameters": {
+          "Bucket": "alexeitranscribefile",
+          "Key.$": "States.Format('{}-sentiment.json',States.ArrayGetItem(States.StringSplit($.fileName, '.'),0))",
+          "Body.$": "States.JsonToString($)"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
+        "Next": "Success"
+      },
+      "Success": {
+        "Type": "Succeed"
+      },
+      "Fail": {
+        "Type": "Fail"
+      }
+    }
+  }

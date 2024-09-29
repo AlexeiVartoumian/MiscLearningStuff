@@ -1,0 +1,45 @@
+---
+- name: Comprehensive S3 Operations
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    bucket_name: "my-test-bucket-{{ 999 | random }}"
+    file_name: "test_file.txt"
+
+  tasks:
+    - name: List S3 buckets
+      amazon.aws.s3_bucket_info:
+      register: s3_buckets
+
+    - name: Display S3 buckets
+      debug:
+        var: s3_buckets
+
+    - name: Create new S3 bucket
+      amazon.aws.s3_bucket:
+        name: "{{ bucket_name }}"
+        state: present
+      register: new_bucket
+
+    - name: Display new bucket info
+      debug:
+        var: new_bucket
+
+    - name: Upload file to S3
+      amazon.aws.s3_object:
+        bucket: "{{ bucket_name }}"
+        object: "{{ file_name }}"
+        content: "This is a test file created by Ansible."
+        mode: put
+
+    - name: List objects in new bucket
+      amazon.aws.s3_object:
+        bucket: "{{ bucket_name }}"
+        mode: list
+      register: bucket_contents
+
+    - name: Display bucket contents
+      debug:
+        var: bucket_contents

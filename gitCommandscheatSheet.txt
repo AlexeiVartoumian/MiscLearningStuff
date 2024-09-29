@@ -1,0 +1,73 @@
+git rm --cached -r . -> remove unstaged files in git 
+git log --graph : all the commits done on the repo HEAD means what branch your on
+git ls-remote --heads origin : shows all the branches a repo has online
+git checkout -b "your branch" : how to locally create a branch
+git push -u origin "your branch" : hot to push a branch to remote repo
+git checkout "yourbranch" : switch to working in this branch 
+git merge "your branch" -m"some messge" : whatever Head is pointing to will be where the results of the merge be applied
+if conflict then either choose one or the other branch by amending the produced files by git or rewrite entirely. then add/commit normally.
+
+git reset --soft HEAD~3 : you are ahead of master by an arbitrary number of commits. in this case 3. this will reset the commits to zero
+whilst keeping any changes on local
+
+How to get copy of branch from online repo to local repo
+Step 1
+git fetch origin : this will retrieve new branches or changes from remote repo
+step2:
+git checkout -b "NameofBranch" origin/NameofBranch : creates a new brnach on your machine and switches to that branch
+i.e git checkout -b "Escape" origin/Escape 
+
+------------------------------------------ git problem scenario--------------------------------
+
+scenario 1 # messing around with a lab and installing packages in a virtual environment. then pushing files to large through git. 
+tried to rectify by  gitignoring and then pushing. encountered a connection issue and could no longer push speicfically to that repo.
+git status showed that i was multiple commits ahead of main. tried to get commit hash of latest commits and only push those but this did not work. then i tried to make a new branch copying over the current state and push that but still the same problem. 
+in  the end had to rebase dropping th commits with the large files.
+
+git status -> see how many commits i am ahead of main
+git log -> commit history see the problemetic commits
+git stash -> following the prompt have to add all unstaged commits
+git rebase -i HEAD~"number of commit" -> will pusll an interactive comit screen on vim for which commits to pick and drop
+ ---> in vim  press i = insert mode equals sgtart editing which to pick and to drop. then esc to once done . then :wq to exit vim.
+
+git push --force origin HEAD:master -> force push the changes to master
+git rebase --continue -> tells git the rebase is complete
+
+
+
+
+git rm --cached -r . -> remove unstaged files in git 
+git log --graph : all the commits done on the repo HEAD means what branch your on
+git ls-remote --heads origin : shows all the branches a repo has online
+git checkout -b "your branch" : how to locally create a branch
+git push -u origin "your branch" : hot to push a branch to remote repo
+git checkout "yourbranch" : switch to working in this branch 
+git merge "your branch" -m"some messge" : whatever Head is pointing to will be where the results of the merge be applied
+if conflict then either choose one or the other branch by amending the produced files by git or rewrite entirely. then add/commit normally.
+
+git reset --soft HEAD~3 : you are ahead of master by an arbitrary number of commits. in this case 3. this will reset the commits to zero
+whilst keeping any changes on local
+
+How to get copy of branch from online repo to local repo
+Step 1
+git fetch origin : this will retrieve new branches or changes from remote repo
+step2:
+git checkout -b "NameofBranch" origin/NameofBranch : creates a new brnach on your machine and switches to that branch
+i.e git checkout -b "Escape" origin/Escape 
+
+------------------------------------------ git problem scenario--------------------------------
+
+scenario 1 # messing around with a lab and installing packages in a virtual environment. then pushing files to large through git. 
+tried to rectify by  gitignoring and then pushing. encountered a connection issue and could no longer push speicfically to that repo.
+git status showed that i was multiple commits ahead of main. tried to get commit hash of latest commits and only push those but this did not work. then i tried to make a new branch copying over the current state and push that but still the same problem. 
+in  the end had to rebase dropping th commits with the large files.
+
+git status -> see how many commits i am ahead of main
+git log -> commit history see the problemetic commits
+git stash -> following the prompt have to add all unstaged commits
+git rebase -i HEAD~"number of commit" -> will pusll an interactive comit screen on vim for which commits to pick and drop
+ ---> in vim  press i = insert mode equals sgtart editing which to pick and to drop. then esc to once done . then :wq to exit vim.
+
+git push --force origin HEAD:master -> force push the changes to master
+git rebase --continue -> tells git the rebase is complete
+

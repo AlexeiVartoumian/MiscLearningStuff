@@ -1,0 +1,82 @@
+{
+    "Comment": "A description of my state machine",
+    "StartAt": "ParallelProcessing",
+    "States": {
+      "ParallelProcessing": {
+        "Type": "Parallel",
+        "Branches": [
+          {
+            "StartAt": "PreserveFileName",
+            "States": {
+              "PreserveFileName": {
+                "Type": "Pass",
+                "Parameters": {
+                  "fileName.$": "$.input.key"
+                },
+                "End": true
+              }
+            }
+          },
+          {
+            "StartAt": "GetObject",
+            "States": {
+              "GetObject": {
+                "Type": "Task",
+                "Parameters": {
+                  "Bucket": "alexeitranscribefile",
+                  "Key.$": "$.input.key"
+                },
+                "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
+                "Next": "Bedrock InvokeModel"
+              },
+              "Bedrock InvokeModel": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::bedrock:invokeModel",
+                "Parameters": {
+                  "ModelId": "arn:aws:bedrock:eu-west-2::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0",
+                  "Body": {
+                    "anthropic_version": "bedrock-2023-05-31",
+                    "max_tokens": 300,
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text.$": "States.Format('Summarize the key points of the following text:\n\n{}', $.Body)"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "ResultSelector": {
+                  "summary.$": "$.Body"
+                },
+                "End": true
+              }
+            }
+          }
+        ],
+        "Next": "CombineResults"
+      },
+      "CombineResults": {
+        "Type": "Pass",
+        "Parameters": {
+          "fileName.$": "$[0].fileName",
+          "summary.$": "$[1].summary"
+        },
+        "Next": "PutSummaryToS3"
+      },
+      "PutSummaryToS3": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
+        "Parameters": {
+          "Bucket": "alexeitranscribefile",
+          "Key.$": "States.Format('{}-summary.json', $.fileName)",
+          "Body.$": "States.JsonToString($.summary)"
+        },
+        "End": true
+      }
+    }
+  }

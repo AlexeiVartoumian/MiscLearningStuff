@@ -1,0 +1,31 @@
+---
+- name: Launch EC2 Instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    aws_region: us-west-2  # Change as needed
+    instance_type: t2.micro
+    ami_id: ami-xxxxxxxxxxxxxxxxx  # Replace with your desired AMI ID
+    key_name: your-key-pair  # Replace with your key pair name
+    security_group: sg-xxxxxxxxxxxxxxxxx  # Replace with your security group ID
+    subnet_id: subnet-xxxxxxxxxxxxxxxxx  # Replace with your subnet ID
+
+  tasks:
+    - name: Launch EC2 instance
+      amazon.aws.ec2_instance:
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ ami_id }}"
+        key_name: "{{ key_name }}"
+        security_group: "{{ security_group }}"
+        vpc_subnet_id: "{{ subnet_id }}"
+        region: "{{ aws_region }}"
+        wait: yes
+        tags:
+          Name: AnsibleCreatedInstance
+      register: ec2
+
+    - name: Print the instance ID
+      debug:
+        var: ec2.instance_ids

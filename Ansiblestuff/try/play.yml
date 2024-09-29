@@ -1,0 +1,27 @@
+---
+- name: Simple S3 Operations
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    bucket_name: "my-test-bucket-{{ 999 | random }}"
+
+  tasks:
+    - name: List S3 buckets
+      amazon.aws.s3_bucket_info:
+      register: s3_buckets
+
+    - name: Display S3 buckets
+      debug:
+        var: s3_buckets
+
+    - name: Create new S3 bucket
+      amazon.aws.s3_bucket:
+        name: "{{ bucket_name }}"
+        state: present
+      register: new_bucket
+
+    - name: Display new bucket info
+      debug:
+        var: new_bucket

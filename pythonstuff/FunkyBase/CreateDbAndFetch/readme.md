@@ -1,0 +1,1 @@
+batch statment with partiql NOTE!! got a poorly formed error vlaidaiotn something on the lines of  LEFT_ROW Paren expected on row column constructor as parenthesis are expeceted to enclose the values to be inserted also has to change values to value to make it work 

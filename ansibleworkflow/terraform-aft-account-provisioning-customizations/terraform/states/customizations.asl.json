@@ -1,0 +1,20 @@
+{
+    "StartAt": "Pass",
+    "States": {
+      "Pass": {
+        "Type": "Pass",
+        "Next": "aft-ansible-workflow-step"
+      },
+      "aft-ansible-workflow-step": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::states:startExecution.sync:2",
+        "Parameters": {
+          "StateMachineArn": "${data_aft_ansible_workflow_state}",
+          "Input.$": "$"
+        },
+        "End": true
+      }
+    }
+  }
+
+  

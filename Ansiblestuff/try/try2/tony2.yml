@@ -1,0 +1,45 @@
+---
+- name: Debug IAM User Creation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Get AWS account ID
+      command: aws sts get-caller-identity --query Account --output text
+      register: aws_account_id
+      changed_when: false
+
+    - name: Display AWS account ID
+      debug:
+        var: aws_account_id.stdout
+
+    - name: List existing IAM users
+      command: aws iam list-users --query 'Users[].UserName' --output text
+      register: existing_users
+      changed_when: false
+
+    - name: Display existing IAM users
+      debug:
+        var: existing_users.stdout_lines
+
+    - name: Attempt to create IAM user
+      iam_user:
+        name: "tonytime"
+        state: present
+      register: iam_result
+      ignore_errors: yes
+
+    - name: Display IAM user creation result
+      debug:
+        var: iam_result
+
+    - name: Check if user was created
+      command: aws iam get-user --user-name tonytime
+      register: user_check
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Display user check result
+      debug:
+        var: user_check

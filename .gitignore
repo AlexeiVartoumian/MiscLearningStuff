@@ -1,0 +1,5 @@
+.env
+state/.terraform/
+state/variables.tf
+lambda_project/venv
+lambda_project/package

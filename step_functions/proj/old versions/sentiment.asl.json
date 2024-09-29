@@ -1,0 +1,82 @@
+{
+    "Comment": "my transccribing state machine",
+    "StartAt": "StartCallTranscriptionJob",
+    "States": {
+      "StartCallTranscriptionJob": {
+        "Type": "Task",
+        "Parameters": {
+          "LanguageCode": "en-US",
+          "Media": {
+            "MediaFileUri": "s3://alexeitranscribefile/George_Bush_meets_with_Mali_president_Amaour_Touré_-_press_conference.ogg"
+          },
+          "TranscriptionJobName.$": "$$.Execution.Name",
+          "OutputBucketName": "alexeitranscribefile"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:transcribe:startTranscriptionJob",
+        "Next": "Wait two seconds"
+      },
+      "Wait two seconds": {
+        "Type": "Wait",
+        "Seconds": 2,
+        "Next": "GetTranscriptionJob",
+        "Comment": "wait two seconds"
+      },
+      "GetTranscriptionJob": {
+        "Type": "Task",
+        "Parameters": {
+          "TranscriptionJobName.$": "$$.Execution.Name"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:transcribe:getTranscriptionJob",
+        "Next": "Transcript Status"
+      },
+      "Transcript Status": {
+        "Type": "Choice",
+        "Choices": [
+          {
+            "Variable": "$.TranscriptionJob.TranscriptionJobStatus",
+            "StringEquals": "COMPLETED",
+            "Next": "GetObject",
+            "Comment": " transcript complete"
+          },
+          {
+            "Variable": "$.TranscriptionJob.TranscriptionJobStatus",
+            "StringEquals": "IN_PROGRESS",
+            "Next": "Wait two seconds",
+            "Comment": "transcript processing"
+          }
+        ],
+        "Default": "Fail"
+      },
+      "GetObject": {
+        "Type": "Task",
+        "Parameters": {
+          "Bucket": "alexeitranscribefile",
+          "Key.$": "States.Format('{}.json', $.TranscriptionJob.TranscriptionJobName)"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
+        "Next": "Pass"
+      },
+      "Pass": {
+        "Type": "Pass",
+        "Next": "DedectSentiment",
+        "Parameters": {
+          "Body.$": "States.StringToJson($.Body)"
+        }
+      },
+      "DedectSentiment": {
+        "Type": "Task",
+        "Parameters": {
+          "LanguageCode": "en",
+          "Text.$": "$.Body.results.transcripts[0].transcript"
+        },
+        "Resource": "arn:aws:states:::aws-sdk:comprehend:detectSentiment",
+        "Next": "Success"
+      },
+      "Success": {
+        "Type": "Succeed"
+      },
+      "Fail": {
+        "Type": "Fail"
+      }
+    }
+  }

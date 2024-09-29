@@ -1,0 +1,203 @@
+{
+    "eventVersion": "1.09",
+    "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "AIDAVV6SK6W4GNMPU4DPS",
+        "arn": "arn:aws:iam::390746273208:user/Matthew",
+        "accountId": "390746273208",
+        "accessKeyId": "ASIAVV6SK6W4JCXUBDPW",
+        "userName": "Matthew",
+        "sessionContext": {
+            "attributes": {
+                "creationDate": "2024-08-08T09:03:02Z",
+                "mfaAuthenticated": "false"
+            }
+        }
+    },
+    "eventTime": "2024-08-08T10:46:50Z",
+    "eventSource": "ec2.amazonaws.com",
+    "eventName": "RunInstances",
+    "awsRegion": "ap-south-2",
+    "sourceIPAddress": "82.132.228.240",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "requestParameters": {
+        "instancesSet": {
+            "items": [
+                {
+                    "imageId": "ami-0e55e721512f34b3f",
+                    "minCount": 1,
+                    "maxCount": 1
+                }
+            ]
+        },
+        "instanceType": "t3.micro",
+        "blockDeviceMapping": {},
+        "monitoring": {
+            "enabled": false
+        },
+        "disableApiTermination": false,
+        "disableApiStop": false,
+        "clientToken": "0c15dd5c-c214-466c-8cdb-5cc51ebfaae9",
+        "networkInterfaceSet": {
+            "items": [
+                {
+                    "deviceIndex": 0,
+                    "associatePublicIpAddress": true,
+                    "groupSet": {
+                        "items": [
+                            {
+                                "groupId": "sg-06875bfa5b4fc73d1"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "ebsOptimized": true,
+        "metadataOptions": {
+            "httpTokens": "required",
+            "httpPutResponseHopLimit": 2,
+            "httpEndpoint": "enabled"
+        }
+    },
+    "responseElements": {
+        "requestId": "24148d08-605e-41fd-9870-8b99ca236e0d",
+        "reservationId": "r-0b9595ab625480ed2",
+        "ownerId": "390746273208",
+        "groupSet": {},
+        "instancesSet": {
+            "items": [
+                {
+                    "instanceId": "i-073190f61b1495b70",
+                    "imageId": "ami-0e55e721512f34b3f",
+                    "bootMode": "uefi-preferred",
+                    "currentInstanceBootMode": "uefi",
+                    "instanceState": {
+                        "code": 0,
+                        "name": "pending"
+                    },
+                    "privateDnsName": "ip-172-31-36-163.ap-south-2.compute.internal",
+                    "amiLaunchIndex": 0,
+                    "productCodes": {},
+                    "instanceType": "t3.micro",
+                    "launchTime": 1723114010000,
+                    "placement": {
+                        "availabilityZone": "ap-south-2b",
+                        "tenancy": "default"
+                    },
+                    "monitoring": {
+                        "state": "disabled"
+                    },
+                    "subnetId": "subnet-082f0eb8e6a062ebe",
+                    "vpcId": "vpc-03c932e8d4da4eea4",
+                    "privateIpAddress": "172.31.36.163",
+                    "stateReason": {
+                        "code": "pending",
+                        "message": "pending"
+                    },
+                    "architecture": "x86_64",
+                    "rootDeviceType": "ebs",
+                    "rootDeviceName": "/dev/xvda",
+                    "blockDeviceMapping": {},
+                    "virtualizationType": "hvm",
+                    "hypervisor": "xen",
+                    "clientToken": "0c15dd5c-c214-466c-8cdb-5cc51ebfaae9",
+                    "groupSet": {
+                        "items": [
+                            {
+                                "groupId": "sg-06875bfa5b4fc73d1",
+                                "groupName": "launch-wizard-1"
+                            }
+                        ]
+                    },
+                    "sourceDestCheck": true,
+                    "networkInterfaceSet": {
+                        "items": [
+                            {
+                                "networkInterfaceId": "eni-0d5730700a825c844",
+                                "subnetId": "subnet-082f0eb8e6a062ebe",
+                                "vpcId": "vpc-03c932e8d4da4eea4",
+                                "ownerId": "390746273208",
+                                "status": "in-use",
+                                "macAddress": "0a:25:7c:4f:a8:5f",
+                                "privateIpAddress": "172.31.36.163",
+                                "privateDnsName": "ip-172-31-36-163.ap-south-2.compute.internal",
+                                "sourceDestCheck": true,
+                                "interfaceType": "interface",
+                                "groupSet": {
+                                    "items": [
+                                        {
+                                            "groupId": "sg-06875bfa5b4fc73d1",
+                                            "groupName": "launch-wizard-1"
+                                        }
+                                    ]
+                                },
+                                "attachment": {
+                                    "attachmentId": "eni-attach-0e711615804544762",
+                                    "deviceIndex": 0,
+                                    "networkCardIndex": 0,
+                                    "status": "attaching",
+                                    "attachTime": 1723114010000,
+                                    "deleteOnTermination": true
+                                },
+                                "privateIpAddressesSet": {
+                                    "item": [
+                                        {
+                                            "privateIpAddress": "172.31.36.163",
+                                            "privateDnsName": "ip-172-31-36-163.ap-south-2.compute.internal",
+                                            "primary": true
+                                        }
+                                    ]
+                                },
+                                "ipv6AddressesSet": {},
+                                "tagSet": {}
+                            }
+                        ]
+                    },
+                    "ebsOptimized": true,
+                    "enaSupport": true,
+                    "cpuOptions": {
+                        "coreCount": 1,
+                        "threadsPerCore": 2
+                    },
+                    "capacityReservationSpecification": {
+                        "capacityReservationPreference": "open"
+                    },
+                    "enclaveOptions": {
+                        "enabled": false
+                    },
+                    "metadataOptions": {
+                        "state": "pending",
+                        "httpTokens": "required",
+                        "httpPutResponseHopLimit": 2,
+                        "httpEndpoint": "enabled",
+                        "httpProtocolIpv4": "enabled",
+                        "httpProtocolIpv6": "disabled",
+                        "instanceMetadataTags": "disabled"
+                    },
+                    "maintenanceOptions": {
+                        "autoRecovery": "default"
+                    },
+                    "privateDnsNameOptions": {
+                        "hostnameType": "ip-name",
+                        "enableResourceNameDnsARecord": false,
+                        "enableResourceNameDnsAAAARecord": false
+                    }
+                }
+            ]
+        }
+    },
+    "requestID": "24148d08-605e-41fd-9870-8b99ca236e0d",
+    "eventID": "5c9e175b-0db8-4ccd-a9db-aaaf801d11c7",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "390746273208",
+    "eventCategory": "Management",
+    "tlsDetails": {
+        "tlsVersion": "TLSv1.3",
+        "cipherSuite": "TLS_AES_128_GCM_SHA256",
+        "clientProvidedHostHeader": "ec2.ap-south-2.amazonaws.com"
+    },
+    "sessionCredentialFromConsole": "true"
+}
