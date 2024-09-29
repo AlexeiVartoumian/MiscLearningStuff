@@ -1,0 +1,41 @@
+---
+- name: Create EC2 key pair
+  amazon.aws.ec2_key:
+    name: ansible-key
+    region: "{{ region }}"
+  register: ec2_key
+
+- name: Save private key
+  copy:
+    content: "{{ ec2_key.key.private_key }}"
+    dest: ./ansible-key.pem
+    mode: 0600
+  when: ec2_key.changed
+
+- name: Provision EC2 instance
+  amazon.aws.ec2_instance:
+    name: ansible-webserver
+    key_name: ansible-key
+    vpc_subnet_id: "{{ subnet.subnet.id }}"
+    instance_type: "{{ instance_type }}"
+    security_group: "{{ security_group.group_id }}"
+    network:
+      assign_public_ip: true
+    image_id: "{{ ami_id }}"
+    region: "{{ region }}"
+    wait: yes
+    state: present
+  register: ec2
+
+- name: Add new instance to host group
+  add_host:
+    hostname: "{{ ec2.instances[0].public_ip_address }}"
+    groupname: webserver
+
+- name: Wait for SSH to come up
+  wait_for:
+    host: "{{ ec2.instances[0].public_ip_address }}"
+    port: 22
+    delay: 60
+    timeout: 320
+    state: started

@@ -1,0 +1,23 @@
+---
+- name: Install Apache
+  yum:
+    name: httpd
+    state: latest
+
+- name: Start Apache service
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: Create index.html
+  copy:
+    content: "<html><body><h1>Hello from Ansible-created EC2 instance!</h1></body></html>"
+    dest: /var/www/html/index.html
+
+- name: Get EC2 instance facts
+  ec2_metadata_facts:
+
+- name: Display public IP
+  debug:
+    msg: "Web server is accessible at http://{{ ansible_ec2_public_ipv4 }}"

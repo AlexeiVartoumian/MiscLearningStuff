@@ -1,0 +1,38 @@
+{
+    "family": "ansible-task",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "256",
+    "memory": "512",
+    "containerDefinitions": [
+      {
+        "name": "ansible-container",
+        "image": "ansible/ansible-runner",
+        "essential": true,
+        "command": [
+  "sh", "-c", 
+  "pip install awscli && aws s3 cp s3://${S3_BUCKET}/${S3_KEY} . && unzip ${S3_KEY} && cd playbook && ansible-galaxy collection install -r requirements.yml && ansible-playbook main.yml"
+],
+        "environment": [
+          {
+            "name": "S3_BUCKET",
+            "value": "your-ansible-playbooks-bucket"
+          },
+          {
+            "name": "S3_KEY",
+            "value": "playbook.zip"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/ansible-task",
+            "awslogs-region": "us-west-2",
+            "awslogs-stream-prefix": "ecs"
+          }
+        }
+      }
+    ],
+    "executionRoleArn": "arn:aws:iam::your-account-id:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::your-account-id:role/ansible-task-role"
+  }

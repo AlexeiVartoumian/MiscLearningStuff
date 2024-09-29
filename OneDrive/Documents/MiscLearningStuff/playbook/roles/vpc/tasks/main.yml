@@ -1,0 +1,45 @@
+---
+- name: Create VPC
+  amazon.aws.ec2_vpc_net:
+    name: ansible-vpc
+    cidr_block: "{{ vpc_cidr }}"
+    region: "{{ region }}"
+    tenancy: default
+    state: present
+  register: vpc
+
+- name: Create Internet Gateway
+  amazon.aws.ec2_vpc_igw:
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ region }}"
+    state: present
+  register: igw
+
+- name: Create subnet
+  amazon.aws.ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ vpc.vpc.id }}"
+    cidr: "{{ subnet_cidr }}"
+    az: "{{ availability_zone }}"
+    region: "{{ region }}"
+    map_public: yes
+    resource_tags:
+      Name: ansible-subnet
+  register: subnet
+
+- name: Create security group
+  amazon.aws.ec2_group:
+    name: ansible-sg
+    description: Security group for Ansible-created instances
+    vpc_id: "{{ vpc.vpc.id }}"
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        ports:
+          - 80
+        cidr_ip: 0.0.0.0/0
+  register: security_group
