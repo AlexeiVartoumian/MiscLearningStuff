@@ -1,0 +1,13 @@
+{
+    "account_info": {
+      "account": {
+        "id": "123456789012",
+        "email": "example@example.com",
+        "name": "Example Account"
+      }
+    },
+    "custom_fields": {
+      "environment": "production",
+      "department": "finance"
+    }
+  }
