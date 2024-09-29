@@ -112,11 +112,11 @@ resource "aws_instance" "aft_ansible_instance" {
 
   subnet_id                   = data.aws_subnet.existing.id
   vpc_security_group_ids      = [aws_security_group.allow_ssm_ssh.id]
-  associate_public_ip_address = var.associate_public_ip
-
+  #associate_public_ip_address = var.associate_public_ip
+  associate_public_ip_address = true
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
   key_name             = aws_key_pair.ssh_key.key_name
-
+ 
   user_data = base64encode(<<-EOF
               #!/bin/bash
               sudo dnf install python3 python3-pip -y
