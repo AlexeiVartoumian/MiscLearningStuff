@@ -115,3 +115,56 @@ if __name__ == "__main__":
             create_iam_user(credentials)
         else:
             print("Failed to assume role. Cannot create IAM user.")
+
+
+
+
+import os
+import boto3
+import botocore
+import json
+
+def create_iam_user(vended_account_id):
+    # Use the default credential provider chain, which will use the
+    # credentials provided to the execution environment
+    sts_client = boto3.client('sts')
+    
+    try:
+        # Verify the identity we're using
+        identity = sts_client.get_caller_identity()
+        print(f"Current identity: {json.dumps(identity, default=str)}")
+        
+        # Create an IAM client for the vended account
+        iam = boto3.client('iam')
+        
+        # Attempt to create the user
+        response = iam.create_user(UserName="AFTCreatedUser")
+        print(f"Successfully created IAM user: {json.dumps(response, default=str)}")
+        
+    except botocore.exceptions.ClientError as e:
+        error_code = e.response['Error']['Code']
+        error_message = e.response['Error']['Message']
+        print(f"Error creating IAM user: {error_code} - {error_message}")
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+
+if __name__ == "__main__":
+    vended_account_id = os.environ.get('VENDED_ACCOUNT_ID')
+    if not vended_account_id:
+        print("Error: VENDED_ACCOUNT_ID environment variable not set")
+    else:
+        print(f"Attempting to create IAM user in account: {vended_account_id}")
+        create_iam_user(vended_account_id)
+
+
+#modify where script is being called
+export AWS_PROFILE=aft-target
+log_message "Set AWS_PROFILE to aft-target"
+
+# Run the Python script with the vended account ID
+log_message "Running iam_user.py"
+VENDED_ACCOUNT_ID=$VENDED_ACCOUNT_ID python $PYTHON_DIR/iam_user.py
+
+# Unset the AWS profile to avoid affecting other operations
+unset AWS_PROFILE
+log_message "Unset AWS_PROFILE"
