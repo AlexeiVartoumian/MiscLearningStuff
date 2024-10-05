@@ -1,0 +1,53 @@
+---
+- name: Create S3 Bucket
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+
+  vars:
+    bucket_name: "my-unique-bucket-name-{{ 999 | random }}"
+    region: "eu-west-1"  # Change this to your preferred region
+
+  tasks:
+    - name: Get Python interpreter path
+      command: which python
+      register: python_path
+      changed_when: false
+
+    - name: Set Python interpreter
+      set_fact:
+        ansible_python_interpreter: "{{ python_path.stdout }}"
+
+    - name: Get Python site-packages path
+      command: "{{ ansible_python_interpreter }} -c 'import site; print(site.getsitepackages()[0])'"
+      register: site_packages_path
+      changed_when: false
+
+    - name: Set PYTHONPATH
+      set_fact:
+        ansible_environment: 
+          PYTHONPATH: "{{ site_packages_path.stdout }}:{{ ansible_env.PYTHONPATH | default('') }}"
+
+    - name: Create S3 bucket
+      amazon.aws.s3_bucket:
+        name: "{{ bucket_name }}"
+        region: "{{ region }}"
+        versioning: true
+      register: s3_result
+      environment: "{{ ansible_environment }}"
+
+    - name: Display S3 bucket creation result
+      debug:
+        var: s3_result
+
+    - name: List S3 buckets
+      command: aws s3 ls
+      register: s3_list
+      changed_when: false
+      environment: "{{ ansible_environment }}"
+
+    - name: Display S3 bucket list
+      debug:
+        var: s3_list.stdout_lines
