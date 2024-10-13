@@ -1,0 +1,11 @@
+{
+    "stack_name": "YourStackName",
+    "template_file": "path/to/your/template.yaml",
+    "region": "us-east-1",
+    "log_group_name": "/aws/cloudformation/your-log-group",
+    "log_stream_name": "your-log-stream",
+    "parameters": {
+      "ParameterKey1": "ParameterValue1",
+      "ParameterKey2": "ParameterValue2"
+    }
+  }
