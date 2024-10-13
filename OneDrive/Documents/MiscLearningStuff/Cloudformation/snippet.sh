@@ -141,3 +141,59 @@ CHANGE_SET_NAME="${STACK_NAME}-changes-$(date +%Y%m%d-%H%M%S)"
 create_and_log_change_set "$STACK_NAME" "$TEMPLATE_FILE" "$CHANGE_SET_NAME" "${PARAMS[@]}"
 
 echo "Change set details have been logged to $LOG_FILE"
+
+
+
+###0----------------------------------------------------
+
+stack_exists() {
+    local stack_name="$1"
+    if aws cloudformation describe-stacks --stack-name "$stack_name" --region "$REGION" &> /dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Function to create a new stack
+create_stack() {
+    local stack_name="$1"
+    local template_file="$2"
+    local parameters=("${@:3}")
+
+    echo "Creating new stack: $stack_name"
+    aws cloudformation create-stack \
+        --stack-name "$stack_name" \
+        --template-body "file://$template_file" \
+        --parameters "${parameters[@]}" \
+        --capabilities CAPABILITY_NAMED_IAM \
+        --region "$REGION"
+
+    echo "Waiting for stack creation to complete..."
+    aws cloudformation wait stack-create-complete --stack-name "$stack_name" --region "$REGION"
+    echo "Stack created successfully."
+}
+
+# Check if the stack exists
+if stack_exists "$STACK_NAME"; then
+    echo "Stack $STACK_NAME exists. Creating a change set."
+    create_and_log_change_set "$STACK_NAME" "$TEMPLATE_FILE" "$CHANGE_SET_NAME" "${PARAMS[@]}"
+    echo "Change set details have been logged to $LOG_FILE"
+else
+    echo "Stack $STACK_NAME does not exist. Creating a new stack."
+    create_stack "$STACK_NAME" "$TEMPLATE_FILE" "${PARAMS[@]}"
+    echo "Stack creation details:" >> "$LOG_FILE"
+    aws cloudformation describe-stacks --stack-name "$STACK_NAME" --region "$REGION" >> "$LOG_FILE"
+    echo "----------------------------------------" >> "$LOG_FILE"
+    echo "Stack creation details have been logged to $LOG_FILE"
+fi
+
+# Optionally, you can add logic here to decide whether to execute the change set if one was created
+# For example:
+# if stack_exists "$STACK_NAME"; then
+#     read -p "Do you want to execute this change set? (y/n) " -n 1 -r
+#     if [[ $REPLY =~ ^[Yy]$ ]]
+#     then
+#         aws cloudformation execute-change-set --stack-name "$STACK_NAME" --change-set-name "$CHANGE_SET_NAME" --region "$REGION"
+#     fi
+# fi
