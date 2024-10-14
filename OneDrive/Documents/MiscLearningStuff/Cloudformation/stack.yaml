@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "This template creates a CloudTrail and configures it to send logs to an S3 bucket as well as CloudWatch Logs."
+
+Parameters:
+  S3BucketName:
+    Description: "An existing S3 Bucket name to send logs to"
+    Type: String
+  TrailName:
+    Description: "A CloudTrail name"
+    Type: String
+
+Resources:
+  CloudTrailRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "cloudtrail.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "CloudTrail-CloudWatch-Logs-Policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:CloudTrail/DefaultLogGroup:*"
+
+  CloudTrailLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: "CloudTrail/DefaultLogGroup"
+      RetentionInDays: 30
+
+  NomUsCloudTrailLog:
+    Type: 'AWS::CloudTrail::Trail'
+    DependsOn:
+      - CloudTrailRole
+      - CloudTrailLogGroup
+    Properties:
+      TrailName: !Ref TrailName
+      S3BucketName: !Ref S3BucketName
+      IncludeGlobalServiceEvents: true 
+      IsLogging: true 
+      IsMultiRegionTrail: true 
+      EventSelectors: 
+        - DataResources: 
+            - Type: 'AWS::S3::Object'
+              Values: ['arn:aws:s3:::']
+          IncludeManagementEvents: true 
+          ReadWriteType: All 
+      EnableLogFileValidation: true 
+      CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
+      CloudWatchLogsRoleArn: !GetAtt CloudTrailRole.Arn
+
+Outputs:
+  CloudTrailRoleArn:
+    Description: "The ARN of the IAM Role created for CloudTrail"
+    Value: !GetAtt CloudTrailRole.Arn
+  CloudTrailLogGroupArn:
+    Description: "The ARN of the CloudWatch Logs Group for CloudTrail"
+    Value: !GetAtt CloudTrailLogGroup.Arn
