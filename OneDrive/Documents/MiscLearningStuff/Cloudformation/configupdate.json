@@ -4,6 +4,7 @@
     "region": "eu-west-1",
     "parameters": {
       "S3BucketName": "demo-cloudtrail-bucket-unsafe",
-      "TrailName": "Nom-Cloud-trail-logs"
+      "TrailName": "Updated-Nom-Cloud-trail-logs",
+      "NotificationEmail": "admin@example.com"
     }
   }
