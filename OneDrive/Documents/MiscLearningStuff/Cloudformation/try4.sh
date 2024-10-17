@@ -107,8 +107,9 @@ create_apply_change_set() {
                     ;;
             esac
         done
-
+        
         echo "Change set applied successfully." | tee -a change_set_log.txt
+        log_to_cloudwatch change_set_log.txt
     fi
 
     log_to_cloudwatch "Change Set Applied for stack: $stack_name"
