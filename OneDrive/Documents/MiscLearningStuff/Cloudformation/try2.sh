@@ -23,10 +23,15 @@ log_to_cloudwatch() {
     local message="$1"
     local timestamp=$(date +%s000)
     
-    aws logs put-log-events \
+    if aws logs put-log-events \
         --log-group-name "$LOG_GROUP_NAME" \
         --log-stream-name "$LOG_STREAM_NAME" \
-        --log-events "timestamp=$timestamp,message=$message"
+        --log-events "timestamp=$timestamp,message=$message" 2>/dev/null; then
+        echo "Logged to cloudwatch: $message"
+    else
+        echo "failed to log to cloudwaych: $message"
+        echo "$(date +%Y%m%d-%H%M%S) - failed ot log to cloudwatch: $message" >> cloudwatch_errors.log
+    fi
 }
 
 # Function to check if a stack exists

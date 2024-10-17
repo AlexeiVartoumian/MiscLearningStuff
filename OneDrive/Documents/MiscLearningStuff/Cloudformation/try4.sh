@@ -114,3 +114,41 @@ create_apply_change_set() {
 
     log_to_cloudwatch "Change Set Applied for stack: $stack_name"
 }
+
+
+
+##change logging
+log_to_cloudwatch() {
+    local message="$1"
+    local timestamp=$(date +%s000)
+    
+    # Escape newlines and double quotes in the message
+    message=$(echo "$message" | jq -R -s '.')
+    
+    # Construct the log event JSON
+    local log_event='[{"timestamp":'$timestamp',"message":'$message'}]'
+    
+    # Get the sequence token
+    local sequence_token=$(aws logs describe-log-streams \
+        --log-group-name "$LOG_GROUP_NAME" \
+        --log-stream-name "$LOG_STREAM_NAME" \
+        --query 'logStreams[0].uploadSequenceToken' \
+        --output text 2>/dev/null)
+    
+    local put_log_cmd="aws logs put-log-events \
+        --log-group-name \"$LOG_GROUP_NAME\" \
+        --log-stream-name \"$LOG_STREAM_NAME\" \
+        --log-events \"$log_event\""
+    
+    # Add sequence token if it exists
+    if [ "$sequence_token" != "None" ] && [ -n "$sequence_token" ]; then
+        put_log_cmd="$put_log_cmd --sequence-token $sequence_token"
+    fi
+    
+    if eval $put_log_cmd 2>&1 | tee cloudwatch_output.log; then
+        echo "Logged to CloudWatch successfully"
+    else
+        echo "Failed to log to CloudWatch. Check cloudwatch_output.log for details."
+        echo "$(date +%Y%m%d-%H%M%S) - Failed to log to CloudWatch: $message" >> cloudwatch_errors.log
+    fi
+}
