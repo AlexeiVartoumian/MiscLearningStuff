@@ -1,0 +1,15 @@
+│
+├── main.tf                 # Root module configuration
+├── variables.tf            # Variable declarations for the root module
+├── outputs.tf              # Output declarations for the root module
+├── terraform.tfvars        # Variable values for different stacks
+│
+├── cfn-stack/              # Directory for the CloudFormation stack module
+│   ├── main.tf             # Main configuration for the cfn-stack module
+│   ├── variables.tf        # Variable declarations for the cfn-stack module
+│   └── outputs.tf          # Output declarations for the cfn-stack module
+│
+├── templates/              # Directory for CloudFormation templates
+│   ├── ConfigureCloudTrail.yaml
+│   ├── AnotherTemplate.yaml
+│   └── ... (other CloudFormation templates)
