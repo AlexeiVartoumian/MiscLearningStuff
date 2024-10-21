@@ -13,3 +13,142 @@
 │   ├── ConfigureCloudTrail.yaml
 │   ├── AnotherTemplate.yaml
 │   └── ... (other CloudFormation templates)
+
+
+
+
+Terraform CloudFormation Code Placement
+Here's where each part of the code should go in the file structure:
+Copyproject-root/
+│
+├── main.tf
+├── variables.tf
+├── outputs.tf
+├── terraform.tfvars
+│
+├── cfn-stack/
+│   ├── main.tf
+│   ├── variables.tf
+│   └── outputs.tf
+│
+└── templates/
+    ├── ConfigureCloudTrail.yaml
+    └── AnotherTemplate.yaml
+1. cfn-stack/main.tf
+This file should contain the main logic for the CloudFormation stack module:
+hclCopyresource "aws_cloudformation_stack" "this" {
+  name = var.stack_name
+
+  template_body = file(var.template_file)
+
+  parameters = var.parameters
+
+  capabilities = var.capabilities
+
+  tags = var.tags
+}
+2. cfn-stack/variables.tf
+This file should declare all the variables used in the module:
+hclCopyvariable "stack_name" {
+  type = string
+}
+
+variable "template_file" {
+  type = string
+}
+
+variable "parameters" {
+  type = map(string)
+}
+
+variable "capabilities" {
+  type    = list(string)
+  default = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM"]
+}
+
+variable "tags" {
+  type    = map(string)
+  default = {}
+}
+3. cfn-stack/outputs.tf
+This file should declare the outputs from the module:
+hclCopyoutput "stack_id" {
+  value = aws_cloudformation_stack.this.id
+}
+
+output "outputs" {
+  value = aws_cloudformation_stack.this.outputs
+}
+4. main.tf (in the root directory)
+This file should contain the provider configuration and the module calls:
+hclCopyprovider "aws" {
+  region = var.region
+}
+
+module "cfn_stacks" {
+  source   = "./cfn-stack"
+  for_each = var.stacks
+
+  stack_name    = each.key
+  template_file = each.value.template_file
+  parameters    = each.value.parameters
+  tags          = each.value.tags
+}
+5. variables.tf (in the root directory)
+This file should declare the variables used in the root module:
+hclCopyvariable "region" {
+  type = string
+}
+
+variable "stacks" {
+  type = map(object({
+    template_file = string
+    parameters    = map(string)
+    tags          = map(string)
+  }))
+}
+6. outputs.tf (in the root directory)
+This file should declare the outputs from the root module:
+hclCopyoutput "stack_ids" {
+  value = { for k, v in module.cfn_stacks : k => v.stack_id }
+}
+
+output "stack_outputs" {
+  value = { for k, v in module.cfn_stacks : k => v.outputs }
+}
+7. terraform.tfvars (in the root directory)
+This file should contain the actual values for your variables:
+hclCopyregion = "eu-west-1"
+
+stacks = {
+  "ConfigureCloudTrail" = {
+    template_file = "templates/ConfigureCloudTrail.yaml"
+    parameters = {
+      S3BucketName = "demo-cloudtrail-bucket-unsafe"
+      TrailName    = "Nom-Cloud-trail-logs"
+    }
+    tags = {
+      Environment = "Production"
+      Project     = "CloudTrail Configuration"
+    }
+  },
+  "AnotherStack" = {
+    template_file = "templates/AnotherTemplate.yaml"
+    parameters = {
+      Param1 = "Value1"
+      Param2 = "Value2"
+    }
+    tags = {
+      Environment = "Staging"
+      Project     = "Another Project"
+    }
+  }
+  # Add more stacks as needed
+}
+8. templates/ directory
+Place your CloudFormation template files in this directory:
+
+templates/ConfigureCloudTrail.yaml
+templates/AnotherTemplate.yaml
+
+This organization separates the module logic, the root module configuration, and the variable values, making it easier to manage and maintain your Terraform configuration for multiple CloudFormation stacks.
